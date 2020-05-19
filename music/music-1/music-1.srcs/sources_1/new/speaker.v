@@ -27,6 +27,7 @@ module speaker(
     pb_down,
     pb_up,
     pb_mid,
+    DIP_music,
     segs,
     ssd_ctl,
     leds,
@@ -37,6 +38,7 @@ module speaker(
 );
 input clk;
 input pb_left, pb_right, pb_down, pb_up, pb_mid;
+input DIP_music;
 output [7:0] segs;
 output [3:0] ssd_ctl;
 output [15:0] leds;
@@ -50,6 +52,9 @@ wire [3:0] ssd_in;
 wire [1:0] ssd_ctl_en;
 
 assign leds[0] = beat;
+
+assign amp_down = 16'hFF00;
+assign amp_up = 16'h0200;
 
 inputs U_in(
     .clk(clk),
@@ -73,7 +78,7 @@ freqdiv27 U_fd(
     .clk_time(), // divided clock 1 hz
     .clk_ctl(ssd_ctl_en) // clock for scan control
 );
-
+/*
 note_control U_nc(
     .clk(clk),
     .rst_n(rst_n),
@@ -88,12 +93,13 @@ note_control U_nc(
     .amp_display1(dig1),
     .note()
 );
-
+*/
 ring_note U_rn(
     .clk(clk),
     .rst_n(rst_n),
     .beat(beat),
-    .note(note)
+    .note(note),
+    .DIP_music(DIP_music)
 );
 
 buzzer_control U_bc(

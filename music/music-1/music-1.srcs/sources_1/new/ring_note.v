@@ -25,28 +25,44 @@ module ring_note(
     clk,
     rst_n,
     beat,
-    note
+    note,
+    DIP_music
 );
-input clk, rst_n;
+input clk, rst_n, DIP_music;
 output beat;
 output [21:0] note;
+
 
 wire beat_clk;
 reg [6:0] cnt, cnt_next;
 reg [21:0] note;
-reg [127:0] ring;
-wire [127:0] ring_next;
+reg [255:0] ring;
+reg [255:0] ring_next;
+reg [26:0] clk_sel;
 
 freqdiv27 U_fd1(
     .clk(clk),
     .rst_n(rst_n),
-    .set_freq(`beat_63), // beat_63
+    .set_freq(clk_sel), // beat_63
     .clk_time(beat_clk),
     .clk_ctl()
 );
 
-//assign ring_next = {ring[251:0], ring[255:252]};
-assign ring_next = {ring[123:0], ring[127:124]};
+always@*
+begin
+    if (DIP_music == `play_frog)
+        clk_sel = `beat_126;
+    else
+        clk_sel = `beat_63;
+end
+
+always@*
+begin
+    if (DIP_music == `play_frog)
+        ring_next = {ring[251:0], ring[255:252]};
+    else
+        ring_next = {128'b0, ring[123:0], ring[127:124]};
+end
 
 /*always @*
     if (cnt == 7'd31)
@@ -60,11 +76,17 @@ assign ring_next = {ring[123:0], ring[127:124]};
 
 always @(posedge beat_clk or negedge rst_n)
     if (~rst_n)
-        ring <= `black;
+        if (DIP_music == `play_black)
+            ring <= {128'b0, `black};
+        else
+            ring <= `frog;
     else
         ring <= ring_next;
 
 always @ *
+begin
+  if (DIP_music == `play_black)
+  begin
     case(ring[127:124])
     4'd7: note = `note_G4p;		
     4'd6: note = `note_G4;        
@@ -76,8 +98,9 @@ always @ *
     4'd0: note = `note_none;        
     default: note = `note_none;
     endcase
-
-/*always @ *
+  end
+  else
+  begin
     case(ring[255:252])
     4'd9: note = `note_D5;
     4'd8: note = `note_A4p;
@@ -90,7 +113,9 @@ always @ *
     4'd1: note = `note_A3;
     4'd0: note = `note_none;
     default: note = `note_none;
-    endcase*/
+    endcase
+  end
+end
 
 /*always @ *
     case(cnt)

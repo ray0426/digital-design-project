@@ -39,7 +39,7 @@
 `define clk_sck 22'd7
 
 `define amp_0 32'h00000000
-`define amp_1 32'hF8000800
+`define amp_1 32'hFF000200
 `define amp_2 32'hF0001000
 `define amp_3 32'hE8001800
 `define amp_4 32'hE0002000
@@ -58,6 +58,8 @@
 `define black 128'h10154030202240321017676710176767
 `define frog 256'h3305003303603322330700330380775533779932021044333333000000000000				
 
+`define play_black 1'b0
+`define play_frog 1'b1
 				
 				
 

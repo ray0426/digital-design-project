@@ -78,22 +78,7 @@ freqdiv27 U_fd(
     .clk_time(), // divided clock 1 hz
     .clk_ctl(ssd_ctl_en) // clock for scan control
 );
-/*
-note_control U_nc(
-    .clk(clk),
-    .rst_n(rst_n),
-    .pb_left(pb_left),
-    .pb_right(pb_right),
-    .pb_down(pb_down_pulse),
-    .pb_up(pb_up_pulse),
-    .pb_mid(pb_mid),
-    .amp_down(amp_down),
-    .amp_up(amp_up),
-    .amp_display0(dig0),
-    .amp_display1(dig1),
-    .note()
-);
-*/
+
 ring_note U_rn(
     .clk(clk),
     .rst_n(rst_n),

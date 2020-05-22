@@ -1,0 +1,67 @@
+Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2016.2 (win64) Build 1577090 Thu Jun  2 16:32:40 MDT 2016
+| Date         : Fri May 22 01:17:00 2020
+| Host         : MSI running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file speaker_control_sets_placed.rpt
+| Design       : speaker
+| Device       : xc7a35t
+------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Flip-Flop Distribution
+3. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Number of unique control sets                            |    14 |
+| Unused register locations in slices containing registers |    52 |
++----------------------------------------------------------+-------+
+
+
+2. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |               9 |            3 |
+| No           | No                    | Yes                    |             782 |          194 |
+| No           | Yes                   | No                     |               2 |            2 |
+| Yes          | No                    | No                     |               0 |            0 |
+| Yes          | No                    | Yes                    |              27 |            7 |
+| Yes          | Yes                   | No                     |               0 |            0 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+3. Detailed Control Set Information
+-----------------------------------
+
++-------------------------------+----------------------------+----------------------------+------------------+----------------+
+|          Clock Signal         |        Enable Signal       |      Set/Reset Signal      | Slice Load Count | Bel Load Count |
++-------------------------------+----------------------------+----------------------------+------------------+----------------+
+|  n_0_359_BUFG                 |                            | n_1_358_BUFG               |                1 |              1 |
+|  n_1_358_BUFG                 |                            | n_0_359_BUFG               |                1 |              1 |
+| ~U_spc/U_fd1/parallel_reg[15] |                            | U_in/U_pblr/audio_sdin_reg |                2 |              2 |
+|  beat_clk                     |                            | U_in/U_pblr/ring_reg[466]  |                1 |              4 |
+| ~U_spc/U_fd2/cnt_reg[4]_0     |                            | U_in/U_pblr/audio_sdin_reg |                2 |              6 |
+|  beat_clk                     |                            |                            |                6 |             18 |
+|  clk_IBUF_BUFG                | U_in/U_pblr/cnt[0]_i_1_n_2 | U_in/U_pblr/cnt[0]_i_3_n_2 |                7 |             27 |
+|  beat_clk                     |                            | U_in/U_pblr/cnt_reg[0]_0   |               11 |             53 |
+|  clk_IBUF_BUFG                |                            | U_in/U_pblr/audio_sdin_reg |               21 |             69 |
+|  clk_IBUF_BUFG                |                            | U_in/U_pblr/cnt_reg[0]_0   |               22 |             78 |
+|  beat_clk                     |                            | U_in/U_pblr/audio_sdin_reg |               16 |             90 |
+|  beat_clk                     |                            | U_in/U_pblr/ring_reg[8]    |               25 |            128 |
+|  beat_clk                     |                            | n_0_359_BUFG               |               48 |            176 |
+|  beat_clk                     |                            | n_1_358_BUFG               |               46 |            176 |
++-------------------------------+----------------------------+----------------------------+------------------+----------------+
+
+

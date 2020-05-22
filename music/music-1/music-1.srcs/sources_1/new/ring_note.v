@@ -36,8 +36,8 @@ output [21:0] note;
 wire beat_clk;
 reg [6:0] cnt, cnt_next;
 reg [21:0] note;
-reg [255:0] ring;
-reg [255:0] ring_next;
+reg [511:0] ring;
+reg [511:0] ring_next;
 reg [26:0] clk_sel;
 
 freqdiv27 U_fd1(
@@ -59,9 +59,9 @@ end
 always@*
 begin
     if (DIP_music == `play_frog)
-        ring_next = {ring[251:0], ring[255:252]};
+        ring_next = {ring[503:0], ring[511:504]};
     else
-        ring_next = {128'b0, ring[123:0], ring[127:124]};
+        ring_next = {256'b0, ring[247:0], ring[255:248]};
 end
 
 /*always @*
@@ -77,17 +77,17 @@ end
 always @(posedge beat_clk or negedge rst_n)
     if (~rst_n)
         if (DIP_music == `play_black)
-            ring <= {128'b0, `black};
+            ring <= {256'b0, `black};
         else
             ring <= `frog;
     else
         ring <= ring_next;
-
+/*
 always @ *
 begin
   if (DIP_music == `play_black)
-  begin
-    case(ring[127:124])
+  begin  
+    case(ring[3:0])
     4'd7: note = `note_G4p;		
     4'd6: note = `note_G4;        
     4'd5: note = `note_C4;        
@@ -116,94 +116,96 @@ begin
     endcase
   end
 end
-
-/*always @ *
-    case(cnt)
-    7'd0: note = `note_B7;
-    7'd1: note = `note_A7p;
-    7'd2: note = `note_A7;
-    7'd3: note = `note_G7p;
-    7'd4: note = `note_G7;
-    7'd5: note = `note_F7p;
-    7'd6: note = `note_F7;
-    7'd7: note = `note_E7;
-    7'd8: note = `note_D7p;
-    7'd9: note = `note_D7;
-    7'd10: note = `note_C7p;
-    7'd11: note = `note_C7;
-    7'd12: note = `note_B6;
-    7'd13: note = `note_A6p;
-    7'd14: note = `note_A6;
-    7'd15: note = `note_G6p;
-    7'd16: note = `note_G6;
-    7'd17: note = `note_F6p;
-    7'd18: note = `note_F6;
-    7'd19: note = `note_E6;
-    7'd20: note = `note_D6p;
-    7'd21: note = `note_D6;
-    7'd22: note = `note_C6p;
-    7'd23: note = `note_C6;
-    7'd24: note = `note_B5;
-    7'd25: note = `note_A5p;
-    7'd26: note = `note_A5;
-    7'd27: note = `note_G5p;
-    7'd28: note = `note_G5;
-    7'd29: note = `note_F5p;
-    7'd30: note = `note_F5;
-    7'd31: note = `note_E5;
-    7'd32: note = `note_D5p;
-    7'd33: note = `note_D5;
-    7'd34: note = `note_C5p;
-    7'd35: note = `note_C5;
-    7'd36: note = `note_B4;
-    7'd37: note = `note_A4p;
-    7'd38: note = `note_A4;
-    7'd39: note = `note_G4p;
-    7'd40: note = `note_G4;
-    7'd41: note = `note_F4p;
-    7'd42: note = `note_F4;
-    7'd43: note = `note_E4;
-    7'd44: note = `note_D4p;
-    7'd45: note = `note_D4;
-    7'd46: note = `note_C4p;
-    7'd47: note = `note_C4;
-    7'd48: note = `note_B3;
-    7'd49: note = `note_A3p;
-    7'd50: note = `note_A3;
-    7'd51: note = `note_G3p;
-    7'd52: note = `note_G3;
-    7'd53: note = `note_F3p;
-    7'd54: note = `note_F3;
-    7'd55: note = `note_E3;
-    7'd56: note = `note_D3p;
-    7'd57: note = `note_D3;
-    7'd58: note = `note_C3p;
-    7'd59: note = `note_C3;
-    7'd60: note = `note_B2;
-    7'd61: note = `note_A2p;
-    7'd62: note = `note_A2;
-    7'd63: note = `note_G2p;
-    7'd64: note = `note_G2;
-    7'd65: note = `note_F2p;
-    7'd66: note = `note_F2;
-    7'd67: note = `note_E2;
-    7'd68: note = `note_D2p;
-    7'd69: note = `note_D2;
-    7'd70: note = `note_C2p;
-    7'd71: note = `note_C2;
-    7'd72: note = `note_B1;
-    7'd73: note = `note_A1p;
-    7'd74: note = `note_A1;
-    7'd75: note = `note_G1p;
-    7'd76: note = `note_G1;
-    7'd77: note = `note_F1p;
-    7'd78: note = `note_F1;
-    7'd79: note = `note_E1;
-    7'd80: note = `note_D1p;
-    7'd81: note = `note_D1;
-    7'd82: note = `note_C1p;
-    7'd83: note = `note_C1;
-    default: note = `note_none;
-    endcase*/
-
+*/
+always @ *
+begin
+    case(ring[7:0])
+8'd84: note = `note_B7;
+    8'd83: note = `note_A7p;
+    8'd82: note = `note_A7;
+    8'd81: note = `note_G7p;
+    8'd80: note = `note_G7;
+    8'd79: note = `note_F7p;
+    8'd78: note = `note_F7;
+    8'd77: note = `note_E7;
+    8'd76: note = `note_D7p;
+    8'd75: note = `note_D7;
+    8'd74: note = `note_C7p;
+    8'd73: note = `note_C7;
+    8'd72: note = `note_B6;
+    8'd71: note = `note_A6p;
+    8'd70: note = `note_A6;
+    8'd69: note = `note_G6p;
+    8'd68: note = `note_G6;
+    8'd67: note = `note_F6p;
+    8'd66: note = `note_F6;
+    8'd65: note = `note_E6;
+    8'd64: note = `note_D6p;
+    8'd63: note = `note_D6;
+    8'd62: note = `note_C6p;
+    8'd61: note = `note_C6;
+    8'd60: note = `note_B5;
+    8'd59: note = `note_A5p;
+    8'd58: note = `note_A5;
+    8'd57: note = `note_G5p;
+    8'd56: note = `note_G5;
+    8'd55: note = `note_F5p;
+    8'd54: note = `note_F5;
+    8'd53: note = `note_E5;
+    8'd52: note = `note_D5p;
+    8'd51: note = `note_D5;
+    8'd50: note = `note_C5p;
+    8'd49: note = `note_C5;
+    8'd48: note = `note_B4;
+    8'd47: note = `note_A4p;
+    8'd46: note = `note_A4;
+    8'd45: note = `note_G4p;
+    8'd44: note = `note_G4;
+    8'd43: note = `note_F4p;
+    8'd42: note = `note_F4;
+    8'd41: note = `note_E4;
+    8'd40: note = `note_D4p;
+    8'd39: note = `note_D4;
+    8'd38: note = `note_C4p;
+    8'd37: note = `note_C4;
+    8'd36: note = `note_B3;
+    8'd35: note = `note_A3p;
+    8'd34: note = `note_A3;
+    8'd33: note = `note_G3p;
+    8'd32: note = `note_G3;
+    8'd31: note = `note_F3p;
+    8'd30: note = `note_F3;
+    8'd29: note = `note_E3;
+    8'd28: note = `note_D3p;
+    8'd27: note = `note_D3;
+    8'd26: note = `note_C3p;
+    8'd25: note = `note_C3;
+    8'd24: note = `note_B2;
+    8'd23: note = `note_A2p;
+    8'd22: note = `note_A2;
+    8'd21: note = `note_G2p;
+    8'd20: note = `note_G2;
+    8'd19: note = `note_F2p;
+    8'd18: note = `note_F2;
+    8'd17: note = `note_E2;
+    8'd16: note = `note_D2p;
+    8'd15: note = `note_D2;
+    8'd14: note = `note_C2p;
+    8'd13: note = `note_C2;
+    8'd12: note = `note_B1;
+    8'd11: note = `note_A1p;
+    8'd10: note = `note_A1;
+    8'd9: note = `note_G1p;
+    8'd8: note = `note_G1;
+    8'd7: note = `note_F1p;
+    8'd6: note = `note_F1;
+    8'd5: note = `note_E1;
+    8'd4: note = `note_D1p;
+    8'd3: note = `note_D1;
+    8'd2: note = `note_C1p;
+    8'd1: note = `note_C1;
+    8'd0: note = `note_none;
+    default : note = `note_none;
+    endcase
+end
 endmodule

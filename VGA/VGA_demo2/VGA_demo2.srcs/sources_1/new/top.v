@@ -34,6 +34,8 @@ mem_addr_gen mem_addr_gen_inst(
   .v_cnt(v_cnt),
   .pixel_addr(pixel_addr)
 );
+
+
      
 // Use reduced 320x240 address to output the saved picture from RAM 
 /*blk_mem_gen_0 blk_mem_gen_0_inst(

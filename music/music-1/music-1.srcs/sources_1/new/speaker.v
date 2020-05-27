@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "global.v"
+`include "notes.v"
 module speaker(
     clk,
     pb_left,
@@ -46,15 +47,33 @@ output audio_mclk, audio_lrck, audio_sck, audio_sdin;
 wire [15:0] amp_down, amp_up;
 wire [15:0] audio_left, audio_right;
 wire [21:0] note;
+wire [1:0] note_num;
 wire beat;
 wire [3:0] dig0, dig1, dig2, dig3;
 wire [3:0] ssd_in;
 wire [1:0] ssd_ctl_en;
+wire pb_left_pulse, pb_right_pulse, pb_down_pulse, pb_up_pulse, pb_mid_pulse;
+wire clk_100;
+wire music_mode, music_mode_cur;
+reg music_rst;
+wire [1025:0] ring;
 
 assign leds[0] = beat;
-
 assign amp_down = 16'hFF00;
 assign amp_up = 16'h0200;
+assign leds[1] = music_mode;
+assign leds[2] = pb_right;
+assign note_num = ring[1025 : 1024];
+assign leds[4] = ring[1025];
+assign leds[5] = ring[1024];
+
+always@*
+begin
+    if (music_mode != music_mode_cur)
+        music_rst = 1;
+    else
+        music_rst = 0;
+end
 
 inputs U_in(
     .clk(clk),
@@ -65,10 +84,11 @@ inputs U_in(
     .pb_mid(pb_mid),
     .rst_n(rst_n),
     .pb_left_pulse(pb_left_pulse),
-    .pb_right_pulse(pb_rignt_pulse),
+    .pb_right_pulse(pb_right_pulse),
     .pb_down_pulse(pb_down_pulse),
     .pb_up_pulse(pb_up_pulse),
-    .pb_mid_pulse(pb_mid_pulse)
+    .pb_mid_pulse(pb_mid_pulse),
+    .clk_100(clk_100)
 );
 
 freqdiv27 U_fd(
@@ -84,19 +104,29 @@ ring_note U_rn(
     .rst_n(rst_n),
     .beat(beat),
     .note(note),
-    .DIP_music(DIP_music)
+    .DIP_music(DIP_music),
+    .music_mode(music_mode),
+    .music_mode_cur(music_mode_cur),
+    .pb_left_pulse(pb_left_pulse),
+    .pb_right_pulse(pb_right_pulse),
+    .pb_down_pulse(pb_down_pulse),
+    .pb_up_pulse(pb_up_pulse),
+    .pb_mid_pulse(pb_mid_pulse),
+    .music_rst(music_rst),
+    .ring(ring)
 );
 
 buzzer_control U_bc(
     .clk(clk),
     .rst_n(rst_n),
     .note1(note),
-    .note2(0),
-    .note3(0),
-    .note4(0),
+    .note2(`note_E4),
+    .note3(`note_G4),
+    .note4(`note_C5),
     .amp(amp_up),
     .audio_left(audio_left),
-    .audio_right(audio_right)
+    .audio_right(audio_right),
+    .note_num(note_num)
 );
 
 speaker_control U_spc(
@@ -109,7 +139,15 @@ speaker_control U_spc(
     .audio_sck(audio_sck),
     .audio_sdin(audio_sdin)
 );
-
+// FSM used to change the music
+FSM U_music_ctl(
+    .in_black(pb_left_pulse),
+    .in_frog(pb_right_pulse),
+    .clk(clk),
+    .rst_n(rst_n),
+    .next_state(music_mode),
+    .state(music_mode_cur) // current state
+);
 //**************************************************************
 // Display block
 //**************************************************************

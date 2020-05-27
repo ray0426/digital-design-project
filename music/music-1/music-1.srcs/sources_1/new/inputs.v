@@ -32,13 +32,15 @@ module inputs(
     pb_right_pulse,
     pb_down_pulse,
     pb_up_pulse,
-    pb_mid_pulse
+    pb_mid_pulse,
+    clk_100
 );
 input clk;
 input pb_left, pb_right, pb_down, pb_up, pb_mid;
 output rst_n;
 output pb_left_pulse, pb_right_pulse, pb_down_pulse, pb_up_pulse, pb_mid_pulse;
-wire clk_100;
+
+output wire clk_100;
 
 pb_long_reset U_pblr(
     .clk(clk),

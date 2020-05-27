@@ -39,7 +39,7 @@ input [15:0] amp;
 output [15:0] audio_left, audio_right;
 
 wire note_clk1, note_clk2, note_clk3, note_clk4;
-wire [2:0] pos_clks;
+reg [2:0] pos_clks;
 reg [15:0] audio_left, audio_right;
 
 freqdiv U_fd1(
@@ -69,8 +69,16 @@ freqdiv U_fd4(
     .freq(note4),
     .clk_out(note_clk4)
 );
-
-assign pos_clks = note_clk1 + note_clk2 + note_clk3 + note_clk4;
+always@*
+begin
+    case (note_num)
+    2'b00: pos_clks = note_clk1;
+    2'b01: pos_clks = note_clk1 + note_clk2;
+    2'b10: pos_clks = note_clk1 + note_clk2 + note_clk3;
+    2'b11: pos_clks = note_clk1 + note_clk2 + note_clk3 + note_clk4;
+    default : pos_clks = note_clk1;
+    endcase
+end
 
 always @ *
 begin

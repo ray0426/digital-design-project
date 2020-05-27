@@ -26,19 +26,34 @@ module ring_note(
     rst_n,
     beat,
     note,
-    DIP_music
+    DIP_music,
+    music_mode, music_mode_cur, music_rst,
+    pb_left_pulse, pb_right_pulse, pb_down_pulse, pb_up_pulse, pb_mid_pulse,
+    ring
 );
 input clk, rst_n, DIP_music;
+input music_mode, music_mode_cur, music_rst;
 output beat;
 output [21:0] note;
-
+output reg [1025:0] ring;
+input pb_left_pulse, pb_right_pulse, pb_down_pulse, pb_up_pulse, pb_mid_pulse;
 
 wire beat_clk;
 reg [6:0] cnt, cnt_next;
 reg [21:0] note;
-reg [511:0] ring;
-reg [511:0] ring_next;
+
+reg [1025:0] ring_next;
 reg [26:0] clk_sel;
+reg pb_left_pulse_temp, pb_right_pulse_temp;
+reg rst;
+
+always@*
+begin
+    if ((rst_n == 0) || (music_rst == 1))
+        rst = 0;
+    else
+        rst = 1;
+end
 
 freqdiv27 U_fd1(
     .clk(clk),
@@ -50,18 +65,20 @@ freqdiv27 U_fd1(
 
 always@*
 begin
-    if (DIP_music == `play_frog)
+    if (music_mode == `play_frog)
         clk_sel = `beat_126;
     else
         clk_sel = `beat_63;
 end
 
+
+
 always@*
 begin
-    if (DIP_music == `play_frog)
-        ring_next = {ring[503:0], ring[511:504]};
+    if (music_mode == `play_frog)
+        ring_next = {514'b0, ring[503:0], ring[511:504]};
     else
-        ring_next = {256'b0, ring[247:0], ring[255:248]};
+        ring_next = {2'b01, 768'b0, ring[247:0], ring[255:248]};
 end
 
 /*always @*
@@ -74,14 +91,25 @@ end
         cnt_next = cnt + 1'd1;
     end*/
 
-always @(posedge beat_clk or negedge rst_n)
-    if (~rst_n)
-        if (DIP_music == `play_black)
-            ring <= {256'b0, `black};
+always @(posedge beat_clk or negedge rst)
+begin
+    if (~rst)
+        if (music_mode == `play_black)
+            ring <= {2'b01, 768'b0, `black};
         else
-            ring <= `frog;
+            ring <= {514'b0, `frog};
     else
-        ring <= ring_next;
+        if ((pb_left_pulse_temp == 1) || (pb_right_pulse_temp == 1))
+        begin
+            if (music_mode == `play_black)
+                 ring <= {2'b01, 768'b0, `black};
+            else
+                ring <= {514'b0, `frog};
+        end
+        else
+            ring <= ring_next;
+end
+
 /*
 always @ *
 begin

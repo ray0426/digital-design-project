@@ -19,7 +19,8 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
+`include "global.v"
+`include "notes.v"
 module buzzer_control(
     clk,
     rst_n,
@@ -38,9 +39,10 @@ input [21:0] note1, note2, note3, note4;
 input [15:0] amp;
 output [15:0] audio_left, audio_right;
 
-wire note_clk1, note_clk2, note_clk3, note_clk4;
+wire note_clk1, note_clk2, note_clk3, note_clk4; // the original amplitude of note clock
 reg [2:0] pos_clks;
 reg [15:0] audio_left, audio_right;
+reg [15:0] note1_amp, note4_amp, note2_amp ,note3_amp; // note amplitude after judging whehter its note is 0 or not
 
 freqdiv U_fd1(
     .clk(clk),
@@ -69,6 +71,70 @@ freqdiv U_fd4(
     .freq(note4),
     .clk_out(note_clk4)
 );
+
+// note amplitude for first part
+always@*
+begin
+   if (note1 != `note_none)
+    begin
+        if (note_clk1 == 1)
+            note1_amp = amp;
+        else
+            note1_amp = (17'h100 - amp);
+    end
+    else
+        note1_amp = amp; 
+end
+
+// note amplitude for second part
+always@*
+begin
+    if (note2 != `note_none)
+    begin
+        if (note_clk2 == 1)
+            note2_amp = amp;
+        else
+            note2_amp = (17'h100 - amp);
+    end
+    else
+        note2_amp = amp;
+end
+
+// note amplitude for third part
+always@*
+begin
+    if (note3 != `note_none)
+    begin
+        if (note_clk3 == 1)
+            note3_amp = amp;
+        else
+            note3_amp = (17'h100 - amp);
+    end
+    else
+        note3_amp = 0;
+end
+
+// note amplitude for fourth part
+always@*
+begin
+    if (note4 != `note_none)
+    begin
+        if (note_clk4 == 1)
+            note4_amp = amp;
+        else
+            note4_amp = (17'h100 - amp);
+    end
+    else
+        note4_amp = 0;
+end
+
+always@*
+begin
+    audio_right = note1_amp + note2_amp + note3_amp + note4_amp;
+    audio_left = note1_amp + note2_amp + note3_amp + note4_amp;
+end
+
+/*
 always@*
 begin
     case (note_num)
@@ -120,5 +186,6 @@ begin
         endcase    
     end
 end
+*/
 
 endmodule

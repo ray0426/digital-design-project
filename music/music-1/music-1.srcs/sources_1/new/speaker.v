@@ -46,7 +46,7 @@ output [15:0] leds;
 output audio_mclk, audio_lrck, audio_sck, audio_sdin;
 wire [15:0] amp_down, amp_up;
 wire [15:0] audio_left, audio_right;
-wire [21:0] note;
+wire [21:0] note, note1;
 wire [1:0] note_num;
 wire beat;
 wire [3:0] dig0, dig1, dig2, dig3;
@@ -104,14 +104,10 @@ ring_note U_rn(
     .rst_n(rst_n),
     .beat(beat),
     .note(note),
+    .note1(note1),
     .DIP_music(DIP_music),
     .music_mode(music_mode),
     .music_mode_cur(music_mode_cur),
-    .pb_left_pulse(pb_left_pulse),
-    .pb_right_pulse(pb_right_pulse),
-    .pb_down_pulse(pb_down_pulse),
-    .pb_up_pulse(pb_up_pulse),
-    .pb_mid_pulse(pb_mid_pulse),
     .music_rst(music_rst),
     .ring(ring)
 );
@@ -120,9 +116,9 @@ buzzer_control U_bc(
     .clk(clk),
     .rst_n(rst_n),
     .note1(note),
-    .note2(`note_E4),
-    .note3(`note_G4),
-    .note4(`note_C5),
+    .note2(note1),
+    .note3(22'd0),
+    .note4(22'd0),
     .amp(amp_up),
     .audio_left(audio_left),
     .audio_right(audio_right),

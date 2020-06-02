@@ -5,43 +5,34 @@ module field(
     rst,
     h_cnt,
     v_cnt,
-    pb_left,
-    pb_right,
-    pb_down,
-    pb_up,
-    pb_mid,
+    player_x,
+    player_y,
+    player_cnt,
+    player_dir,
     pixel
 );
 input clk, clk_25MHz;
 input rst;
 input [9:0] h_cnt;
 input [9:0] v_cnt;
-input pb_left, pb_right, pb_down, pb_up, pb_mid;
+input [3:0] player_x, player_y;
+input [3:0] player_cnt;
+input [1:0] player_dir;
 output [11:0] pixel;
 
 wire [9:0] h_cnt_fix, v_cnt_fix;
 wire [8:0] block_addr_h, block_addr_v;
 wire [4:0] addr_rela_h, addr_rela_v;
-wire [13:0] pixel_addr, player_addr;
-reg [11:0] datain, pl_datain;
-wire [11:0] dataout, pl_dataout;
+wire [13:0] pixel_addr;
+reg [11:0] datain;
+wire [11:0] dataout;
 reg [3:0] map_in;
 wire [3:0] map_out;
 reg [11:0] pixel;
-wire [7:0] pic_type;
-
-wire [11:0] player_addr_in;
-wire [3:0] player_x, player_y;
-wire [3:0] player_cnt;
-wire [1:0] player_dir;
 wire [11:0] player_pixel;
+wire [7:0] pic_type;
 wire player_show_en;
 
-assign player_addr_in = player_addr;
-assign player_x = 4'd4;
-assign player_y = 4'd7;
-assign player_dir = 2'd2;
-assign player_cnt = 4'd12;
 
 //wire [399:0] map;
 //assign map = 400'h0101010101181010109001080191011810101090010801910110181090100801010191101810901008010101911010101010;

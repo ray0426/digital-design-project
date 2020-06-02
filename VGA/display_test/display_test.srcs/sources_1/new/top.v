@@ -20,8 +20,11 @@ wire field_valid;
 wire [9:0] h_cnt; //640
 wire [9:0] v_cnt;  //480
 wire pb_left_pulse, pb_right_pulse, pb_down_pulse, pb_up_pulse, pb_mid_pulse;
-
 wire valid;
+wire [3:0] player_x, player_y;
+wire [3:0] player_cnt;
+wire [1:0] player_dir;
+wire clk_step;
 
 assign {vgaRed, vgaGreen, vgaBlue} = (valid == 1'b1) ? pixel :12'h0;
 
@@ -40,6 +43,29 @@ inputs U_in(
     .pb_mid_pulse(pb_mid_pulse)
 );
 
+freqdiv U_fd(
+    .clk(clk),
+    .rst_n(~rst),
+    .freq(22'd781249),
+    .clk_out(clk_step)
+);
+
+player U_player(
+    .x(player_x),
+    .y(player_y),
+    .x_default(1'b1),
+    .y_default(1'b1),
+    .direction(player_dir),
+    .step_cnt(player_cnt),
+    .up(pb_up_pulse),
+    .down(pb_down_pulse),
+    .left(pb_left_pulse),
+    .right(pb_right_pulse),
+    .clk(clk),
+    .rst_n(~rst),
+    .clk_step(clk_step)
+);
+
 // Frequency Divider
 clock_divisor clk_wiz_0_inst(
   .clk(clk),
@@ -49,14 +75,13 @@ clock_divisor clk_wiz_0_inst(
 field U_field(
     .clk(clk),
     .clk_25MHz(clk_25MHz),
-    .rst(rst),
+    .rst(~rst),
     .h_cnt(h_cnt),
     .v_cnt(v_cnt),
-    .pb_left(pb_left_pulse),
-    .pb_right(pb_rignt_pulse),
-    .pb_down(pb_down_pulse),
-    .pb_up(pb_up_pulse),
-    .pb_mid(pb_mid_pulse),
+    .player_x(player_x),
+    .player_y(player_y),
+    .player_cnt(player_cnt),
+    .player_dir(player_dir),
     .pixel(pixel)
 );
 
@@ -70,12 +95,5 @@ vga_controller   vga_inst(
   .h_cnt(h_cnt),
   .v_cnt(v_cnt)
 );
-
-/*always @ (posedge clk)
-begin
-    hsync <= hsync_next;
-    vsync <= vsync_next;
-    valid <= valid_next;
-end*/
       
 endmodule

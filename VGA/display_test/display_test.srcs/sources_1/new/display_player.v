@@ -20,7 +20,7 @@ output player_show_en;
 reg [13:0] addr;
 reg player_show_en;
 reg [11:0] mem_in;
-reg [3:0] cntx, cnty;
+reg [4:0] cntx, cnty;
 
 pic_data_1 pic_data_1(
   .clka(clk),
@@ -32,24 +32,24 @@ pic_data_1 pic_data_1(
 
 always @ * begin
     if (player_dir == 2'd1)
-        cntx = 32 + 2 * player_cnt;
+        cntx = 30 + 2 * player_cnt;
     else if (player_dir == 2'd3)
-        cntx = 32 - 2 * player_cnt;
+        cntx = 30 - 2 * player_cnt;
     else
-        cntx = 32;
+        cntx = 30;
         
     if (player_dir == 2'd2)
-        cnty = 32 + 2 * player_cnt;
+        cnty = 30 + 2 * player_cnt;
     else if (player_dir == 2'd0)
-        cnty = 32 - 2 * player_cnt;
+        cnty = 30 - 2 * player_cnt;
     else
-        cnty = 32;
+        cnty = 30;
 end
         
 always @ * begin
-    if ((h_cnt - 32 * (player_x - 1) + cntx - 32 >= 0) && (h_cnt - 32 * (player_x - 1) + cntx - 32 < 32) 
-        && (v_cnt - 32 * (player_y - 1) + cnty - 32 >= 0) && (v_cnt - 32 * (player_y - 1) + cnty - 32 < 32)) begin
-        addr = (h_cnt - 32 * (player_x - 1) + cntx - 32) + 128 * (v_cnt - 32 * (player_y - 1) + cnty - 32) + 4160;
+    if ((h_cnt - (32 * (player_x) + cntx - 30) >= 0) && (h_cnt - (32 * (player_x) + cntx - 30 < 32)) 
+        && (v_cnt - (32 * (player_y) + cnty - 30) >= 0) && (v_cnt - (32 * (player_y) + cnty - 30) < 32)) begin
+        addr = (h_cnt - (32 * (player_x) + cntx - 30)) + 128 * (v_cnt - (32 * (player_y) + cnty - 30)) + 4160;
         if (player_pixel != 12'h0)
             player_show_en = 1'b1;
         else

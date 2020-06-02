@@ -1,10 +1,10 @@
 // Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2016.2 (win64) Build 1577090 Thu Jun  2 16:32:40 MDT 2016
-// Date        : Sat May 30 18:41:15 2020
+// Date        : Tue Jun 02 19:27:37 2020
 // Host        : DESKTOP-RAY running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub
-//               c:/D/ray/nthu/digital_design_exp/final/VGA/display_test/display_test.srcs/sources_1/ip/pic_data/pic_data_stub.v
+//               C:/D/ray/nthu/digital_design_exp/final/VGA/display_test/display_test.srcs/sources_1/ip/pic_data/pic_data_stub.v
 // Design      : pic_data
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a35tcpg236-1

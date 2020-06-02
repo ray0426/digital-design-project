@@ -4,7 +4,7 @@ module pic_addr_generator(
     addr_rela_v,
     pixel_addr
 );
-input [3:0] pic_type;
+input [7:0] pic_type;
 input [4:0] addr_rela_h, addr_rela_v;
 output [13:0] pixel_addr;
 

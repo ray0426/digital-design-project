@@ -47,11 +47,9 @@ wire [3:0] x,y;
 wire [1:0] direction;
 wire [3:0] step_cnt;
 wire [3:0] display_num;
-wire step_trig;
-wire step_delay, step_trig_temp;
 
-//assign led[0] = direction[0];
-//assign led[1] = direction[1];
+assign led[0] = direction[0];
+assign led[1] = direction[1];
 assign led[15] = x[3];
 assign led[14] = x[2];
 assign led[13] = x[1];
@@ -64,9 +62,7 @@ assign led[2] = step_cnt[0];
 assign led[3] = step_cnt[1];
 assign led[4] = step_cnt[2];
 assign led[5] = step_cnt[3];
-assign led[6] = step_trig;
-assign led[0] = step_delay;
-assign led[1] = step_trig_temp;
+
 always@*
 begin
     if ((key_valid == 1) && (last_change == 9'h1D) && (key_down[29] == 1))
@@ -103,6 +99,9 @@ begin
         up <= up_temp;
     end
 end
+/****************
+    Keyboard interface
+  ***************/
 KeyboardDecoder U0(
 .key_down(key_down),
 .last_change(last_change),
@@ -122,8 +121,8 @@ freqdiv U1(
 );
 
 player U2(
-.x_default(4'd5),
-.y_default(4'd5),
+.x_default(4'd1),
+.y_default(4'd1),
 .up(up),
 .down(down),
 .left(left),

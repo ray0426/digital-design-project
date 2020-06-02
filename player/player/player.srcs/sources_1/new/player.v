@@ -24,11 +24,19 @@ module player(
 x, y, x_default, y_default,
 direction, step_cnt,
 up, down, left, right,
-clk, rst_n, clk_step,
-step_trig, step_delay, step_trig_temp
+clk, rst_n, clk_step
     );
-    
-input x_default, y_default;
+/*************************
+    For player module:
+    1. x is the position in horizontal axis
+    2. y is the position in vertical axis
+    3. clk is 100M Hz clock input
+    4. clk_step is clock for the moving counter, currently is 100 Hz
+    5. up, down, left, right are one pulse input from keyboard
+    6. step_cnt are the output counter for moving
+   ****************************/
+   
+input x_default, y_default;     // default value input
 input up, down, left, right;
 input clk, clk_step, rst_n;
 output reg [3:0] x,y;
@@ -39,9 +47,9 @@ reg [1:0] direction_temp;
 reg [3:0] step_cnt_temp;
 reg step_en, step_en_temp;
 reg [3:0] x_temp, y_temp;
-output reg step_delay;
-output reg step_trig_temp;
-output reg step_trig;
+reg step_delay;                 // delay signal of (step_cnt == 4'd15)
+reg step_trig_temp;             // signal of (~delay signal) && (step_cnt == 4'd15)
+reg step_trig;                  // generated 100M Hz trigger signal
 
 /****************************************
   direction judgment.
@@ -71,7 +79,6 @@ end
 /*****************************
     step counter enable judgment
   ****************************/
-  
 always@*
 begin
     if (step_cnt == 4'd15)
@@ -105,7 +112,9 @@ begin
     else
         step_cnt <= step_cnt_temp;
 end
-
+/************************************
+    Transfer 100Hz one pulse trigger signal into 100M-Hz one pulse trigger
+  ***********************************/
 always@(posedge clk or negedge rst_n)
 begin
     if (rst_n == 0)
@@ -135,7 +144,7 @@ begin
         step_trig <= step_trig_temp;
 end
 /*******************************
-    move judgment
+    movement on the plane
   ******************************/
 always@*
 begin
@@ -144,7 +153,7 @@ begin
         case (direction)
         `face_left : 
             begin
-                if (x != 4'd1)
+                if (x != 4'd1)                  // edge judgment
                     begin
                         x_temp = x - 1'b1;
                         y_temp = y;
@@ -157,7 +166,7 @@ begin
             end
          `face_right :
             begin
-                if (x != 4'd10)
+                if (x != 4'd10)                 // edge judgment
                     begin
                         x_temp = x + 1'b1;
                         y_temp = y;
@@ -170,7 +179,7 @@ begin
             end
          `face_up :
             begin
-                if (y != 4'd1)
+                if (y != 4'd1)                  // edge judgment
                     begin
                         x_temp = x;
                         y_temp = y - 1'b1;
@@ -183,7 +192,7 @@ begin
             end
          `face_down :
             begin
-                if (y != 4'd10)
+                if (y != 4'd10)             // edge judgment
                     begin
                         x_temp = x;
                         y_temp = y + 1'b1;

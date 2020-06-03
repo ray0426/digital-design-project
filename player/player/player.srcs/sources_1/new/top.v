@@ -133,10 +133,7 @@ player U2(
 .x(x),
 .y(y),
 .direction(direction),
-.step_cnt(step_cnt),
-.step_trig(step_trig),
-.step_delay(step_delay),
-.step_trig_temp(step_trig_temp)
+.step_cnt(step_cnt)
 );
 
 scan_ctl U3(

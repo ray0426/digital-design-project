@@ -56,16 +56,23 @@ reg step_trig;                  // generated 100M Hz trigger signal
   ***************************************/
 always@*
 begin
-    if (up == 1)
-        direction_temp = `face_up;
-    else if (down == 1)
-        direction_temp = `face_down;
-    else if (left == 1)
-        direction_temp = `face_left;
-    else if (right == 1)
-        direction_temp = `face_right;
-    else   
+    if (step_cnt == 0)
+    begin
+        if (up == 1)
+            direction_temp = `face_up;
+        else if (down == 1)
+            direction_temp = `face_down;
+        else if (left == 1)
+            direction_temp = `face_left;
+        else if (right == 1)
+            direction_temp = `face_right;
+        else   
+            direction_temp = direction;
+    end
+    else
+    begin
         direction_temp = direction;
+    end
 end
 
 always@(posedge clk or negedge rst_n)
@@ -83,8 +90,41 @@ always@*
 begin
     if (step_cnt == 4'd15)
         step_en_temp = 0;
-    else 
-        step_en_temp = step_en | up | down | left | right;
+    else
+    begin 
+        if ((x != 4'd1) && (left == 1))
+            step_en_temp = step_en | left;
+        else if ((x != 4'd10) && (right == 1))
+            step_en_temp = step_en | right;
+        else if ((y != 4'd1) && (up == 1))
+            step_en_temp = step_en | up;
+        else if ((y != 4'd10) && (down == 1))
+            step_en_temp = step_en | down;
+        else
+            step_en_temp = step_en;
+/*  
+        if ((x == 4'd1) || (y == 4'd1) || (x == 4'd10) || (y == 4'd10))
+        begin
+            if ((x == 4'd1) && (y != 4'd1) && (y != 4'd10))
+                step_en_temp = step_en | up | down | right;
+            else if ((x == 4'd1) && (y == 4'd1))
+                step_en_temp = step_en | down | right;
+            else
+                step_en_temp = step_en | left | down | right;
+        end
+        else if ((x == 4'd10) || (y == 4'd10))
+        begin
+            if ((x == 4'd10) && (y != 4'd10))
+                step_en_temp = step_en | left | down | up;
+            else if ((x == 4'd10) && (y == 4'd10))
+                step_en_temp = step_en | left | up;
+            else
+                step_en_temp = step_en | left | up | right;
+        end
+        else
+            step_en_temp = step_en | up | down | left | right;
+  */
+    end
 end
 
 always@(posedge clk or negedge rst_n)

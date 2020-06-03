@@ -10,7 +10,8 @@ module top(
   output [3:0] vgaGreen,
   output [3:0] vgaBlue,
   output hsync,
-  output vsync
+  output vsync,
+  output [15:0] led
 );
 
 wire clk_25MHz;
@@ -27,6 +28,7 @@ wire [1:0] player_dir;
 wire clk_step;
 
 assign {vgaRed, vgaGreen, vgaBlue} = (valid == 1'b1) ? pixel :12'h0;
+assign led[13:0] = {player_dir, player_cnt, player_x, player_y};
 
 inputs U_in(
     .clk(clk),
@@ -37,17 +39,18 @@ inputs U_in(
     .pb_up(pb_up),
     .pb_mid(pb_mid),
     .pb_left_pulse(pb_left_pulse),
-    .pb_right_pulse(pb_rignt_pulse),
+    .pb_right_pulse(pb_right_pulse),
     .pb_down_pulse(pb_down_pulse),
     .pb_up_pulse(pb_up_pulse),
     .pb_mid_pulse(pb_mid_pulse)
 );
 
-freqdiv U_fd(
+freqdiv27 U_fd27(
     .clk(clk),
     .rst_n(~rst),
-    .freq(22'd781249),
-    .clk_out(clk_step)
+    .set_freq(27'd1041665),
+    .clk_time(clk_step),
+    .clk_ctl()
 );
 
 player U_player(

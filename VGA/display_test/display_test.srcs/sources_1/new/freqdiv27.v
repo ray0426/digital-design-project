@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/05/01 23:03:49
+// Create Date: 2020/04/11 13:52:10
 // Design Name: 
-// Module Name: freqdiv
+// Module Name: freqdiv27
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,43 +19,49 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "global.v"
-module freqdiv(
+
+module freqdiv27(
     clk,
     rst_n,
-    freq,
-    clk_out
+    set_freq,
+    clk_time,
+    clk_ctl
 );
-input clk, rst_n;
-input [21:0] freq;
-output clk_out;
-reg [21:0] cnt, cnt_next;
-reg clk_tmp, clk_tmp_next;
+input clk;
+input rst_n;
+input [26:0] set_freq;
+output reg clk_time;
+output reg [1:0] clk_ctl;
+reg [26:0] cnt;
+reg [26:0] cnt_tmp;
+reg clk_tmp;
 
-assign clk_out = clk_tmp && freq != 22'd0;
+// Combinational logics:
+always @*
+    clk_ctl = cnt[16:15];
 
 always @*
-    if (cnt == freq)
+    if (cnt == set_freq)
     begin
-        cnt_next = 22'd0;
-        clk_tmp_next = ~clk_tmp;
+        clk_tmp = ~clk_time;
+        cnt_tmp = 0;
     end
     else
     begin
-        cnt_next = cnt + 1'd1;
-        clk_tmp_next = clk_tmp; 
+        cnt_tmp = cnt + 1;
+        clk_tmp = clk_time;
     end
 
+// Sequential logics: Flip flops
 always @(posedge clk or negedge rst_n)
     if (~rst_n)
     begin
-        cnt <= 22'd0;
-        clk_tmp <= 1'b0;
+        clk_time <= 1'b0;
+        cnt <= 27'd0;
     end
     else
     begin
-        cnt <= cnt_next;
-        clk_tmp <= clk_tmp_next;
+        clk_time <= clk_tmp;
+        cnt <= cnt_tmp;
     end
-
 endmodule

@@ -23,19 +23,12 @@ output [11:0] pixel;
 wire [9:0] h_cnt_fix, v_cnt_fix;
 wire [8:0] block_addr_h, block_addr_v;
 wire [4:0] addr_rela_h, addr_rela_v;
-wire [13:0] pixel_addr;
-reg [11:0] datain;
-wire [11:0] dataout;
-reg [3:0] map_in;
-wire [3:0] map_out;
+
 reg [11:0] pixel;
+wire [11:0] ground_pixel;
 wire [11:0] player_pixel;
-wire [7:0] pic_type;
+wire ground_show_en;
 wire player_show_en;
-
-
-//wire [399:0] map;
-//assign map = 400'h0101010101181010109001080191011810101090010801910110181090100801010191101810901008010101911010101010;
 
 // 640*480
 assign h_cnt_fix = (h_cnt - 25);
@@ -45,27 +38,14 @@ assign block_addr_v = v_cnt_fix >> 5;
 assign addr_rela_h = ((h_cnt - 26) % 32);
 assign addr_rela_v = v_cnt_fix % 32;
 
-pic_addr_generator U_pic_addr_generator(
-    .pic_type(pic_type),
+display_ground U_ground_show(
+    .clk(clk),
+    .block_addr_h(block_addr_h),
+    .block_addr_v(block_addr_v),
     .addr_rela_h(addr_rela_h),
     .addr_rela_v(addr_rela_v),
-    .pixel_addr(pixel_addr)
-);
-
-pic_data pic_data_0(
-  .clka(clk),
-  .wea(0),
-  .addra(pixel_addr),
-  .dina(datain[11:0]),
-  .douta(dataout)
-);
-
-map_0 map_data_0(
-  .clka(clk),
-  .wea(0),
-  .addra(block_addr_h + 10 * block_addr_v),
-  .dina(map_in),
-  .douta(pic_type)
+    .ground_pixel(ground_pixel),
+    .ground_show_en(ground_show_en)
 );
 
 display_player U_player_show(
@@ -81,11 +61,10 @@ display_player U_player_show(
 );
 
 always @ *
-    if ((block_addr_h >= 0) && (block_addr_h <= 9) && (block_addr_v >= 0) && (block_addr_v <= 9))
-        if (player_show_en == 1'b1)
-            pixel = player_pixel;
-        else
-            pixel = dataout;
+    if (player_show_en == 1'b1)
+        pixel = player_pixel;
+    else if (ground_show_en == 1'b1)
+        pixel = ground_pixel;
     else
         pixel = 12'h0;
 

@@ -25,10 +25,8 @@ wire [8:0] block_addr_h, block_addr_v;
 wire [4:0] addr_rela_h, addr_rela_v;
 
 reg [11:0] pixel;
-wire [11:0] ground_pixel;
-wire [11:0] player_pixel;
-wire ground_show_en;
-wire player_show_en;
+wire [11:0] ground_pixel, player_pixel, items_pixel;
+wire ground_show_en, player_show_en, items_show_en;
 
 // 640*480
 assign h_cnt_fix = (h_cnt - 25);
@@ -60,8 +58,20 @@ display_player U_player_show(
     .player_show_en(player_show_en)
 );
 
+display_items U_items_show(
+    .clk(clk),
+    .block_addr_h(block_addr_h[3:0]),
+    .block_addr_v(block_addr_v[3:0]),
+    .addr_rela_h(addr_rela_h),
+    .addr_rela_v(addr_rela_v),
+    .items_pixel(items_pixel),
+    .items_show_en(items_show_en)
+);
+
 always @ *
-    if (player_show_en == 1'b1)
+    if (items_show_en == 1'b1)
+        pixel = items_pixel;
+    else if (player_show_en == 1'b1)
         pixel = player_pixel;
     else if (ground_show_en == 1'b1)
         pixel = ground_pixel;

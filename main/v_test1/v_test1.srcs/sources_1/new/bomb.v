@@ -18,6 +18,7 @@ output [63:0] bomb_position;
 output [3:0] enable;
 
 reg en_11, en_12, en_13, en_14, en_21, en_22, en_23, en_24;
+wire explode_11, explode_12, explode_13, explode_14, explode_21, explode_22, explode_23, explode_24;
 wire bomb_en_11, bomb_en_12, bomb_en_13, bomb_en_14, bomb_en_21, bomb_en_22, bomb_en_23, bomb_en_24;
 wire bomb_trig_11, bomb_trig_12, bomb_trig_13, bomb_trig_14;
 wire bomb_trig_21, bomb_trig_22, bomb_trig_23, bomb_trig_24;
@@ -28,6 +29,8 @@ assign bomb_position = {bomb_x_11, bomb_y_11, bomb_x_12, bomb_y_12, bomb_x_13, b
                         bomb_x_14, bomb_y_14, bomb_x_21, bomb_y_21, bomb_x_22, bomb_y_22,
                         bomb_x_23, bomb_y_23, bomb_x_24, bomb_y_24};
 
+assign explode_12 = bomb_trig_11;
+
 bomb_cnt bomb_11(
     .clk(clk),
     .rst_n(rst_n),
@@ -35,6 +38,7 @@ bomb_cnt bomb_11(
     .place_bomb(place_bomb_1),
     .player_x(x_1),
     .player_y(y_1),
+    .explode(explode_11),
     .bomb_en(bomb_en_11),
     .bomb_trig(bomb_trig_11),
     .bomb_x(bomb_x_11),
@@ -48,6 +52,7 @@ bomb_cnt bomb_12(
     .place_bomb(place_bomb_1),
     .player_x(x_1),
     .player_y(y_1),
+    .explode(explode_12),
     .bomb_en(bomb_en_12),
     .bomb_trig(bomb_trig_12),
     .bomb_x(bomb_x_12),
@@ -61,6 +66,7 @@ bomb_cnt bomb_13(
     .place_bomb(place_bomb_1),
     .player_x(x_1),
     .player_y(y_1),
+    .explode(explode_13),
     .bomb_en(bomb_en_13),
     .bomb_trig(bomb_trig_13),
     .bomb_x(bomb_x_13),
@@ -74,6 +80,7 @@ bomb_cnt bomb_14(
     .place_bomb(place_bomb_1),
     .player_x(x_1),
     .player_y(y_1),
+    .explode(explode_14),
     .bomb_en(bomb_en_14),
     .bomb_trig(bomb_trig_14),
     .bomb_x(bomb_x_14),
@@ -87,6 +94,7 @@ bomb_cnt bomb_14(
     .place_bomb(place_bomb_2),
     .player_x(x_2),
     .player_y(y_2),
+    .explode(explode_21),
     .bomb_en(bomb_en_21),
     .bomb_trig(bomb_trig_21),
     .bomb_x(bomb_x_21),
@@ -100,6 +108,7 @@ bomb_cnt bomb_22(
     .place_bomb(place_bomb_2),
     .player_x(x_2),
     .player_y(y_2),
+    .explode(explode_22),
     .bomb_en(bomb_en_22),
     .bomb_trig(bomb_trig_22),
     .bomb_x(bomb_x_22),
@@ -113,6 +122,7 @@ bomb_cnt bomb_23(
     .place_bomb(place_bomb_2),
     .player_x(x_2),
     .player_y(y_2),
+    .explode(explode_23),
     .bomb_en(bomb_en_23),
     .bomb_trig(bomb_trig_23),
     .bomb_x(bomb_x_23),
@@ -126,6 +136,7 @@ bomb_cnt bomb_24(
     .place_bomb(place_bomb_2),
     .player_x(x_2),
     .player_y(y_2),
+    .explode(explode_24),
     .bomb_en(bomb_en_24),
     .bomb_trig(bomb_trig_24),
     .bomb_x(bomb_x_24),

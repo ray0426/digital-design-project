@@ -59,6 +59,22 @@ reg [3:0] step_cnt_temp, step_cnt_delay;
 reg step_en, step_en_temp;
 reg [3:0] x_temp, y_temp;
 wire step_trig;                  // generated 100M Hz trigger signal
+wire [99:0]map;
+assign map = 100'b0000000000_0100000010_0001001000_0100000010_0001001000_0001001000_0100000010_0001001000_0100000010_0000000000;
+wire walk_en;
+wire [7:0] map_pos;
+
+walk_judgment T0 (
+    .clk(clk),
+    .rst_n(rst_n),
+    .x(x),
+    .y(y),
+    .map(map),
+    .walk_en(walk_en),
+    .direction(direction),
+    .direction_temp(direction_temp),
+    .map_pos(map_pos)    
+);
 
 /****************************************
   direction judgment.
@@ -101,13 +117,13 @@ begin
         step_en_temp = 0;
     else
     begin 
-        if ((x != 4'd0) && (left == 1))
+        if ((x != 4'd0) && (left == 1) && (walk_en == 1))
             step_en_temp = step_en | left;
-        else if ((x != 4'd9) && (right == 1))
+        else if ((x != 4'd9) && (right == 1) && (walk_en == 1))
             step_en_temp = step_en | right;
-        else if ((y != 4'd0) && (up == 1))
+        else if ((y != 4'd0) && (up == 1) && (walk_en == 1))
             step_en_temp = step_en | up;
-        else if ((y != 4'd9) && (down == 1))
+        else if ((y != 4'd9) && (down == 1) && (walk_en == 1))
             step_en_temp = step_en | down;
         else
             step_en_temp = step_en;

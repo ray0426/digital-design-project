@@ -51,8 +51,6 @@ wire [3:0] step_cnt;
 wire [3:0] display_num;
 
 wire [3:0] item_lenth, item_amount;
-reg [3:0]item;
-reg get_item;
 wire [3:0] bomb_length, bomb_amount, bomb_amount_limit, bomb_len_limit;
 reg place_bomb;
 wire [7:0] bomb_position;
@@ -61,6 +59,12 @@ wire [1:0]bomb_cnt, bomb_cnt1, bomb_cnt2;
 wire [2:0] bomb_seq;
 wire place_bomb_trig;
 wire bomb_en1, bomb_en2, bomb_en;
+wire [99:0] map;
+wire walk_en;
+wire [7:0] map_pos;
+wire get_item1, get_item2, get_item3;
+wire [23:0] item;
+wire [3:0] random_num_x, random_num_y;
 /*
 assign led[15] = bomb_position[8];
 assign led[14] = bomb_position[7];
@@ -69,19 +73,22 @@ assign led[12] = bomb_position[5];
 assign led[11] = bomb_position[4];
 assign led[10] = bomb_position[3];
 */
-assign led[9] = bomb_seq[2];
-assign led[8] = bomb_seq[1];
-assign led[7] = bomb_seq[0];
+
+assign led[5] = walk_en;
 
 assign led[1] = bomb_en1;
 assign led[2] = bomb_en2;
 assign led[0] = bomb_en;
-assign led[15] = bomb_cnt[1];
-assign led[14] = bomb_cnt[0];
-assign led[13] = bomb_cnt1[1];
-assign led[12] = bomb_cnt1[0];
-assign led[11] = bomb_cnt2[1];
-assign led[10] = bomb_cnt2[0];
+assign led[15] = direction[1];
+assign led[14] = direction[0];
+assign led[13] = bomb_cnt[1];
+assign led[12] = bomb_cnt[0];
+assign led[11] = bomb_cnt1[1];
+assign led[10] = bomb_cnt1[0];
+assign led[9] = bomb_cnt2[1];
+assign led[8] = bomb_cnt2[0];
+assign led[7] = map_pos[1];
+assign led[6] = map_pos[0];
 //assign led[11] = bomb_en;
 //assign led[10] = bomb_en_temp;
 /*
@@ -125,21 +132,7 @@ end
 /*********************
 item picking
 *******************/
-always@*
-begin
-    if ((key_valid == 1) && (last_change == 9'h2B) && (key_down[43] == 1))
-        get_item = 1;
-    else
-        get_item = 0;
-end
 
-always@*
-begin
-    if (DIP_item == 0)
-        item = `item_num;
-    else
-        item = `item_len;
-end
 
 always@(posedge clk or negedge rst_n)
 begin
@@ -192,7 +185,10 @@ player U2(
 .x(x),
 .y(y),
 .direction(direction),
-.step_cnt(step_cnt)
+.step_cnt(step_cnt),
+.map(map),
+.walk_en(walk_en),
+.map_pos(map_pos)
 );
 
 scan_ctl U3(
@@ -249,5 +245,27 @@ player_bomb U7(
     .bomb_en1(bomb_en1),
     .bomb_en2(bomb_en2),
     .bomb_en(bomb_en)
+);
+
+item U8(
+    .clk(clk), 
+    .clk_1(clk_1), 
+    .rst_n(rst_n),
+    .x(x),
+    .y(y),
+    .random_num_x(random_num_x),
+    .random_num_y(random_num_y),
+    .get_item1(get_item1),
+    .get_item2(get_item2),
+    .get_item3(get_item3),
+    .item(item)
+);
+
+random U9(
+    .clk(clk),
+    .rst_n(rst_n),
+    .clk_1(clk_1),
+    .random_num_x(random_num_x),
+    .random_num_y(random_num_y)
 );
 endmodule

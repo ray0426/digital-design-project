@@ -28,7 +28,10 @@
 `define item_none 4'b0000
 `define item_num 4'b0001
 `define item_len 4'b0010
+`define item_speed 4'b0011
 
 `define bomb_none 8'b1111_1111
 `define bomb_placed 1'b1
 `define bomb_vacancy 1'b0
+
+`define item_disabled 4'b1111

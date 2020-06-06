@@ -57,10 +57,10 @@ wire [3:0] bomb_length, bomb_amount, bomb_amount_limit, bomb_len_limit;
 reg place_bomb;
 wire [7:0] bomb_position;
 wire [6:0] position;
-wire [1:0]bomb_cnt, bomb_cnt_temp;
-wire bomb_en, bomb_en_temp;
+wire [1:0]bomb_cnt, bomb_cnt1, bomb_cnt2;
 wire [2:0] bomb_seq;
 wire place_bomb_trig;
+wire bomb_en1, bomb_en2, bomb_en;
 /*
 assign led[15] = bomb_position[8];
 assign led[14] = bomb_position[7];
@@ -73,10 +73,15 @@ assign led[9] = bomb_seq[2];
 assign led[8] = bomb_seq[1];
 assign led[7] = bomb_seq[0];
 
+assign led[1] = bomb_en1;
+assign led[2] = bomb_en2;
+assign led[0] = bomb_en;
 assign led[15] = bomb_cnt[1];
 assign led[14] = bomb_cnt[0];
-assign led[13] = bomb_cnt_temp[1];
-assign led[12] = bomb_cnt_temp[0];
+assign led[13] = bomb_cnt1[1];
+assign led[12] = bomb_cnt1[0];
+assign led[11] = bomb_cnt2[1];
+assign led[10] = bomb_cnt2[0];
 //assign led[11] = bomb_en;
 //assign led[10] = bomb_en_temp;
 /*
@@ -239,6 +244,10 @@ player_bomb U7(
     .bomb_seq(bomb_seq), 
     .place_bomb_trig(place_bomb_trig),
     .bomb_cnt(bomb_cnt),
-    .bomb_cnt_temp(bomb_cnt_temp)
+    .bomb_cnt1(bomb_cnt1),
+    .bomb_cnt2(bomb_cnt2),
+    .bomb_en1(bomb_en1),
+    .bomb_en2(bomb_en2),
+    .bomb_en(bomb_en)
 );
 endmodule

@@ -24,177 +24,145 @@ module player_bomb(
     clk, rst_n, clk_1,
     place_bomb,
     bomb_seq, place_bomb_trig,
-    bomb_cnt, bomb_cnt_temp
+    bomb_cnt, bomb_cnt1, bomb_cnt2,
+    bomb_en1, bomb_en2, bomb_en
 );
 input clk, rst_n, clk_1;
 input place_bomb;
 output reg [2:0] bomb_seq;
 output reg place_bomb_trig;
 reg [2:0] bomb_seq_temp;
-output reg [1:0] bomb_cnt, bomb_cnt_temp;
-output reg [1:0] bomb_cnt1, bomb_cnt1_temp;
-output reg [1:0] bomb_cnt2, bomb_cnt2_temp;
-reg bomb_en1, bomb_en1_temp;
-reg bomb_en2, bomb_en2_temp;
-reg bomb_en, bomb_en_temp;
-/*************************************
-    bomb trigger for bomb 1
-  ***********************************/
+output wire [1:0] bomb_cnt, bomb_cnt1, bomb_cnt2;
+output wire bomb_en1, bomb_en2, bomb_en;
+wire bomb_trig, bomb_trig1, bomb_trig2;
+bomb_cnt Kbomb_1(
+    .clk(clk),
+    .rst_n(rst_n), 
+    .clk_1(clk_1),
+    .bomb_cnt(bomb_cnt),
+    .bomb_en(bomb_en),
+    .en(1'b1),
+    .bomb_trig(bomb_trig),
+    .place_bomb(place_bomb)
+);
+    
+bomb_cnt Kbomb_2(
+    .clk(clk),
+    .rst_n(rst_n), 
+    .clk_1(clk_1),
+    .bomb_cnt(bomb_cnt1),
+    .bomb_en(bomb_en1),
+    .en(bomb_en),
+    .bomb_trig(bomb_trig1),
+    .place_bomb(place_bomb)
+);
+        
+bomb_cnt Kbomb_3(
+    .clk(clk),
+    .rst_n(rst_n), 
+    .clk_1(clk_1),
+    .bomb_cnt(bomb_cnt2),
+    .bomb_en(bomb_en2),
+    .en(bomb_en1),
+    .bomb_trig(bomb_trig2),
+    .place_bomb(place_bomb)
+);
+     
 always@*
 begin
-   if (bomb_cnt == 2'b11)
-       bomb_en_temp = 0;
-   else
-   begin
-       if (place_bomb == 1)
-           bomb_en_temp = bomb_en | place_bomb;
-       else
-           bomb_en_temp = bomb_en;
-   end
-end
-
-always@(posedge clk or negedge rst_n)
-begin
-    if (rst_n == 0)
-        bomb_en <= 1'b0;
-    else
-        bomb_en <= bomb_en_temp;
-end
-
-/***************************
-    bombing counter
-  ***************************/
-always@*
-begin
-    if (bomb_en1 == 1)
-        bomb_cnt1_temp = bomb_cnt1 + 1;
-    else
-        bomb_cnt1_temp = 0;
-end
-
-always@(posedge clk_1 or negedge rst_n)
-begin
-    if (rst_n == 0)
-        bomb_cnt1 <= 0;
-    else
-        bomb_cnt1 <= bomb_cnt1_temp;
-end
-
-
-/*************************************
-    bomb trigger for bomb 1
-  ***********************************/
-always@*
-begin
-   if (bomb_cnt1 == 2'b11)
-       bomb_en1_temp = 0;
-   else
-   begin
-       if ((place_bomb == 1) && (bomb_en == 1))
-           bomb_en1_temp = bomb_en1 | place_bomb;
-       else
-           bomb_en1_temp = bomb_en;
-   end
-end
-
-always@(posedge clk or negedge rst_n)
-begin
-    if (rst_n == 0)
-        bomb_en1 <= 1'b0;
-    else
-        bomb_en1 <= bomb_en1_temp;
-end
-
-/***************************
-    bombing counter
-  ***************************/
-always@*
-begin
-    if (bomb_en1 == 1)
-        bomb_cnt1_temp = bomb_cnt1 + 1;
-    else
-        bomb_cnt1_temp = 0;
-end
-
-always@(posedge clk_1 or negedge rst_n)
-begin
-    if (rst_n == 0)
-        bomb_cnt1 <= 0;
-    else
-        bomb_cnt1 <= bomb_cnt1_temp;
-end
-
-/*************************************
-    bomb trigger for bomb 1
-  ***********************************/
-always@*
-begin
-   if (bomb_cnt2 == 2'b11)
-       bomb_en2_temp = 0;
-   else
-   begin
-       if ((place_bomb == 1) && (bomb_en1 == 1))
-           bomb_en2_temp = bomb_en2 | place_bomb;
-       else
-           bomb_en2_temp = bomb_en2;
-   end
-end
-
-always@(posedge clk or negedge rst_n)
-begin
-    if (rst_n == 0)
-        bomb_en2 <= 1'b0;
-    else
-        bomb_en2 <= bomb_en2_temp;
-end
-
-/***************************
-    bombing counter
-  ***************************/
-always@*
-begin
-    if (bomb_en2 == 1)
-        bomb_cnt2_temp = bomb_cnt2+ 1;
-    else
-        bomb_cnt2_temp = 0;
-end
-
-always@(posedge clk_1 or negedge rst_n)
-begin
-    if (rst_n == 0)
-        bomb_cnt2 <= 0;
-    else
-        bomb_cnt2 <= bomb_cnt2_temp;
-end
-
-always@*
-begin
-    if (bomb_cnt != 2'b11)
+    if (bomb_seq == {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy})
     begin
-    if (place_bomb)
+        if (place_bomb)
+            bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy};
+        else
+            bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy};
+    end 
+    else if (bomb_seq == {`bomb_vacancy, `bomb_vacancy, `bomb_placed})
     begin
-        if (bomb_seq == {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy})
-            bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy}; 
-        else if (bomb_seq == {`bomb_vacancy, `bomb_vacancy, `bomb_placed})
-            bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_placed};
-        else if (bomb_seq == {`bomb_vacancy, `bomb_placed, `bomb_vacancy})
-            bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_vacancy};
-        else if (bomb_seq == {`bomb_vacancy, `bomb_placed, `bomb_placed})
-            bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
-        else if (bomb_seq == {`bomb_placed, `bomb_vacancy, `bomb_vacancy})
-            bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_vacancy};
-        else if (bomb_seq == {`bomb_placed, `bomb_vacancy, `bomb_placed})
-            bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
-        else if (bomb_seq == {`bomb_placed, `bomb_placed, `bomb_vacancy})
-            bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
-        else 
-            bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
+        case({place_bomb, bomb_trig2})
+        2'b00 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_placed};
+        2'b01 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy};
+        2'b10 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_placed};
+        2'b11 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy};
+        default bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_placed};
+        endcase
+    end    
+    else if (bomb_seq == {`bomb_vacancy, `bomb_placed, `bomb_vacancy})
+    begin
+        case({place_bomb, bomb_trig1})
+        2'b00 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_vacancy};
+        2'b01 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy};
+        2'b10 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_vacancy};
+        2'b11 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy};
+        default bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_vacancy};
+        endcase
+    end
+    else if (bomb_seq == {`bomb_vacancy, `bomb_placed, `bomb_placed})
+    begin
+        case({place_bomb, bomb_trig1, bomb_trig2})
+        3'b000 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_placed};
+        3'b001 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_vacancy};
+        3'b010 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_placed};
+        3'b011 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy};
+        3'b100 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
+        3'b101 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_vacancy};
+        3'b110 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_placed};
+        3'b111 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy};
+        default bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
+        endcase
+    end
+    else if (bomb_seq == {`bomb_placed, `bomb_vacancy, `bomb_vacancy})
+    begin
+        case({place_bomb, bomb_trig})
+        2'b00 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy};
+        2'b01 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy};
+        2'b10 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_vacancy};
+        2'b11 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_vacancy};
+        default bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy};
+        endcase
+    end
+    else if (bomb_seq == {`bomb_placed, `bomb_vacancy, `bomb_placed})
+    begin
+        case({place_bomb, bomb_trig, bomb_trig2})
+        3'b000 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_placed};
+        3'b001 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy};
+        3'b010 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_placed};
+        3'b011 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy};
+        3'b100 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
+        3'b101 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_vacancy};
+        3'b110 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_placed};
+        3'b111 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_vacancy};
+        default bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_placed};
+        endcase
+    end
+    else if (bomb_seq == {`bomb_placed, `bomb_placed, `bomb_vacancy})
+    begin
+        case({place_bomb, bomb_trig, bomb_trig1})
+        3'b000 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_vacancy};
+        3'b001 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy};
+        3'b010 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_vacancy};
+        3'b011 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy};
+        3'b100 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
+        3'b101 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_placed};
+        3'b110 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_placed};
+        3'b111 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_placed};
+        default bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy};
+        endcase
     end
     else
-        bomb_seq_temp = bomb_seq;
+    begin 
+         case ({bomb_trig, bomb_trig1, bomb_trig2})
+         3'b000 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
+         3'b001 : bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_vacancy};
+         3'b010 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_placed};
+         3'b011 : bomb_seq_temp = {`bomb_placed, `bomb_vacancy, `bomb_vacancy};
+         3'b100 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_placed};
+         3'b101 : bomb_seq_temp = {`bomb_vacancy, `bomb_placed, `bomb_vacancy};
+         3'b110 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_placed};
+         3'b111 : bomb_seq_temp = {`bomb_vacancy, `bomb_vacancy, `bomb_vacancy};
+         default bomb_seq_temp = {`bomb_placed, `bomb_placed, `bomb_placed};
+         endcase        
     end
-    else
-        bomb_seq_temp = 3'b0;
 end
 
 always@(posedge clk or negedge rst_n)

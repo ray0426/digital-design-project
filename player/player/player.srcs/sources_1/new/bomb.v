@@ -32,10 +32,10 @@ input [3:0] x, y;
 input place_bomb;
 output reg [7:0] bomb_position;
 //output reg [99:0] bombing;
- reg [7:0] bomb_position_temp;
+reg [7:0] bomb_position_temp;
 output reg [6:0]position;
- reg [1:0] bomb_cnt, bomb_cnt_temp;
- reg bomb_en, bomb_en_temp;
+reg [1:0] bomb_cnt, bomb_cnt_temp;
+reg bomb_en, bomb_en_temp;
 reg bomb_delay, bomb_trig, bomb_trig_temp;
 // position
 always@*
@@ -71,7 +71,7 @@ end
 always@*
 begin
     if (bomb_en == 1)
-        bomb_cnt_temp = bomb_cnt + 1;
+        bomb_cnt_temp = bomb_cnt + 1'b1;
     else
         bomb_cnt_temp = 0;
 end

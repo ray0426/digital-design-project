@@ -41,8 +41,8 @@ input [1:0] scan_ctl_sel;
 always@*
 begin
     case (scan_ctl_sel)
-    2'b00 : scan_ctl = 4'b1111;
-    2'b01 : scan_ctl = 4'b1111;
+    2'b00 : scan_ctl = 4'b0111;
+    2'b01 : scan_ctl = 4'b1011;
     2'b10 : scan_ctl = 4'b1101;
     2'b11 : scan_ctl = 4'b1110;
     default scan_ctl = 4'b0000;

@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/06/01 20:57:03
+// Create Date: 2020/06/05 14:43:35
 // Design Name: 
-// Module Name: global
+// Module Name: item
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,15 +20,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-`define face_left 2'b00
-`define face_up 2'b01
-`define face_right 2'b10
-`define face_down 2'b11
+module item(
+    
+);
+output reg [3:0] item;
 
-`define item_none 4'b0000
-`define item_num 4'b0001
-`define item_len 4'b0010
-
-`define bomb_none 8'b1111_1111
-`define bomb_placed 1'b1
-`define bomb_vacancy 1'b0
+endmodule

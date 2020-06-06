@@ -19,11 +19,12 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
+`include "global.v"
 module top(
 rst, clk, rst_n,
 PS2_DATA, PS2_CLK,
-scan_ctl, D_ssd, led
+scan_ctl, D_ssd, led,
+DIP_item
     );
 /**************************
     For top module:
@@ -32,6 +33,7 @@ scan_ctl, D_ssd, led
 ***************************/
 input rst, clk, rst_n;
 inout PS2_DATA, PS2_CLK;
+input DIP_item;
 output wire [3:0] scan_ctl;
 output wire [7:0] D_ssd;
 output wire [15:0] led;
@@ -48,21 +50,47 @@ wire [1:0] direction;
 wire [3:0] step_cnt;
 wire [3:0] display_num;
 
-assign led[0] = direction[0];
-assign led[1] = direction[1];
-assign led[15] = x[3];
-assign led[14] = x[2];
-assign led[13] = x[1];
-assign led[12] = x[0];
-assign led[10] = y[3];
-assign led[9] = y[2];
-assign led[8] = y[1];
-assign led[7] = y[0];
-assign led[2] = step_cnt[0];
-assign led[3] = step_cnt[1];
-assign led[4] = step_cnt[2];
-assign led[5] = step_cnt[3];
+wire [3:0] item_lenth, item_amount;
+reg [3:0]item;
+reg get_item;
+wire [3:0] bomb_length, bomb_amount, bomb_amount_limit, bomb_len_limit;
+reg place_bomb;
+wire [7:0] bomb_position;
+wire [6:0] position;
+wire [1:0]bomb_cnt, bomb_cnt_temp;
+wire bomb_en, bomb_en_temp;
+wire [2:0] bomb_seq;
+wire place_bomb_trig;
+/*
+assign led[15] = bomb_position[8];
+assign led[14] = bomb_position[7];
+assign led[13] = bomb_position[6];
+assign led[12] = bomb_position[5];
+assign led[11] = bomb_position[4];
+assign led[10] = bomb_position[3];
+*/
+assign led[9] = bomb_seq[2];
+assign led[8] = bomb_seq[1];
+assign led[7] = bomb_seq[0];
 
+assign led[15] = bomb_cnt[1];
+assign led[14] = bomb_cnt[0];
+assign led[13] = bomb_cnt_temp[1];
+assign led[12] = bomb_cnt_temp[0];
+//assign led[11] = bomb_en;
+//assign led[10] = bomb_en_temp;
+/*
+assign led[6] = position[6];
+assign led[5] = position[5];
+assign led[4] = position[4];
+assign led[3] = position[3];
+assign led[2] = position[2];
+assign led[1] = position[1];
+assign led[0] = position[0];
+*/
+/**********************
+    direction judgment)
+    ******************/
 always@*
 begin
     if ((key_valid == 1) && (last_change == 9'h1D) && (key_down[29] == 1))
@@ -80,6 +108,32 @@ begin
         down_temp = 0;
         right_temp = 0;
     end
+end
+
+always@*
+begin
+    if ((key_valid == 1) && (last_change == 9'h29) && (key_down[41] == 1))
+        place_bomb = 1;
+    else
+        place_bomb = 0;
+end
+/*********************
+item picking
+*******************/
+always@*
+begin
+    if ((key_valid == 1) && (last_change == 9'h2B) && (key_down[43] == 1))
+        get_item = 1;
+    else
+        get_item = 0;
+end
+
+always@*
+begin
+    if (DIP_item == 0)
+        item = `item_num;
+    else
+        item = `item_len;
 end
 
 always@(posedge clk or negedge rst_n)
@@ -121,8 +175,8 @@ freqdiv U1(
 );
 
 player U2(
-.x_default(4'd1),
-.y_default(4'd1),
+.x_default(4'd0),
+.y_default(4'd0),
 .up(up),
 .down(down),
 .left(left),
@@ -139,8 +193,8 @@ player U2(
 scan_ctl U3(
 .scan_ctl(scan_ctl),
 .scan_ctl_sel(clk_ctl),
-.out1(4'd0),
-.out2(4'd0),
+.out1(bomb_amount_limit),
+.out2(bomb_len_limit),
 .out3(x),
 .out4(y),
 .ring_out(display_num)
@@ -151,4 +205,40 @@ ssd U4(
 .D_ssd(D_ssd)
 );
 
+player_item U5(
+    .clk(clk),
+    .rst_n(rst_n),
+    .bomb_length(bomb_length), 
+    .bomb_len_limit(bomb_len_limit),
+    .bomb_amount_limit(bomb_amount_limit),
+    .bomb_amount(bomb_amount),
+//    .place_bomb(place_bomb),
+    .item(item),
+    .get_item(get_item)
+    );
+bomb U6(
+   .clk(clk),
+   .clk_1(clk_1),
+   .rst_n(rst_n),
+   .x(x),
+   .y(y),
+   .place_bomb(place_bomb),
+   .bomb_position(bomb_position),
+   .position(position)
+//   .bomb_cnt(bomb_cnt),
+  // .bomb_cnt_temp(bomb_cnt_temp),
+ //  .bomb_en(bomb_en), 
+ //  .bomb_en_temp(bomb_en_temp)
+);
+
+player_bomb U7(
+    .clk(clk),
+    .rst_n(rst_n),
+    .clk_1(clk_1),
+    .place_bomb(place_bomb),
+    .bomb_seq(bomb_seq), 
+    .place_bomb_trig(place_bomb_trig),
+    .bomb_cnt(bomb_cnt),
+    .bomb_cnt_temp(bomb_cnt_temp)
+);
 endmodule

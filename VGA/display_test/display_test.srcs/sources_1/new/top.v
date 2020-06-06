@@ -48,7 +48,7 @@ inputs U_in(
 freqdiv27 U_fd27(
     .clk(clk),
     .rst_n(~rst),
-    .set_freq(27'd1041665),
+    .set_freq(27'd390624),
     .clk_time(clk_step),
     .clk_ctl()
 );

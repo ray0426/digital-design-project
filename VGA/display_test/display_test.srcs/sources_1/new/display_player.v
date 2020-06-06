@@ -23,6 +23,8 @@ reg player_show_en;
 reg [11:0] mem_in;
 reg [5:0] cntx, cnty;
 
+reg [15:0] face_type_offset;
+
 pic_data_1 pic_data_1(
   .clka(clk),
   .wea(0),
@@ -46,11 +48,20 @@ always @ * begin
     else
         cnty = 30;
 end
+
+always @ *
+    case (player_dir)
+    `face_up: face_type_offset = 8256;
+    `face_right: face_type_offset = 4192;
+    `face_down: face_type_offset = 8288;
+    `face_left: face_type_offset = 4160;
+    default: face_type_offset = 8288;
+    endcase
         
 always @ * begin
-    if ((h_cnt - (32 * (player_x - 1) + cntx - 30) >= 0) && (h_cnt - (32 * (player_x - 1) + cntx - 30) < 32) 
-        && (v_cnt - (32 * (player_y - 1) + cnty - 30) >= 0) && (v_cnt - (32 * (player_y - 1) + cnty - 30) < 32)) begin
-        addr = (h_cnt - (32 * (player_x - 1) + cntx - 30)) + 128 * (v_cnt - (32 * (player_y - 1) + cnty - 30)) + 4160;
+    if ((h_cnt - (32 * player_x + cntx - 30) >= 0) && (h_cnt - (32 * player_x + cntx - 30) < 32) 
+        && (v_cnt - (32 * player_y + cnty - 30) >= 0) && (v_cnt - (32 * player_y + cnty - 30) < 32)) begin
+        addr = (h_cnt - (32 * player_x + cntx - 30)) + 128 * (v_cnt - (32 * player_y + cnty - 30)) + face_type_offset;
         if (player_pixel != 12'h0)
             player_show_en = 1'b1;
         else

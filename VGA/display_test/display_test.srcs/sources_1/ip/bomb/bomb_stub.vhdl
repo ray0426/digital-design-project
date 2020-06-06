@@ -1,10 +1,10 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2016.2 (win64) Build 1577090 Thu Jun  2 16:32:40 MDT 2016
--- Date        : Fri Jun 05 12:05:32 2020
+-- Date        : Sat Jun 06 10:11:36 2020
 -- Host        : DESKTOP-RAY running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode synth_stub
---               c:/D/ray/nthu/digital_design_exp/final/VGA/display_test/display_test.srcs/sources_1/ip/bomb/bomb_stub.vhdl
+--               C:/D/ray/nthu/digital_design_exp/final/VGA/display_test/display_test.srcs/sources_1/ip/bomb/bomb_stub.vhdl
 -- Design      : bomb
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7a35tcpg236-1

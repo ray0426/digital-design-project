@@ -60,8 +60,8 @@ display_player U_player_show(
 
 display_items U_items_show(
     .clk(clk),
-    .block_addr_h(block_addr_h[3:0]),
-    .block_addr_v(block_addr_v[3:0]),
+    .block_addr_h(block_addr_h),
+    .block_addr_v(block_addr_v),
     .addr_rela_h(addr_rela_h),
     .addr_rela_v(addr_rela_v),
     .items_pixel(items_pixel),

@@ -92,38 +92,16 @@ begin
         step_en_temp = 0;
     else
     begin 
-        if ((x != 4'd1) && (left == 1))
+        if ((x != 4'd0) && (left == 1))
             step_en_temp = step_en | left;
-        else if ((x != 4'd10) && (right == 1))
+        else if ((x != 4'd9) && (right == 1))
             step_en_temp = step_en | right;
-        else if ((y != 4'd1) && (up == 1))
+        else if ((y != 4'd0) && (up == 1))
             step_en_temp = step_en | up;
-        else if ((y != 4'd10) && (down == 1))
+        else if ((y != 4'd9) && (down == 1))
             step_en_temp = step_en | down;
         else
             step_en_temp = step_en;
-/*  
-        if ((x == 4'd1) || (y == 4'd1) || (x == 4'd10) || (y == 4'd10))
-        begin
-            if ((x == 4'd1) && (y != 4'd1) && (y != 4'd10))
-                step_en_temp = step_en | up | down | right;
-            else if ((x == 4'd1) && (y == 4'd1))
-                step_en_temp = step_en | down | right;
-            else
-                step_en_temp = step_en | left | down | right;
-        end
-        else if ((x == 4'd10) || (y == 4'd10))
-        begin
-            if ((x == 4'd10) && (y != 4'd10))
-                step_en_temp = step_en | left | down | up;
-            else if ((x == 4'd10) && (y == 4'd10))
-                step_en_temp = step_en | left | up;
-            else
-                step_en_temp = step_en | left | up | right;
-        end
-        else
-            step_en_temp = step_en | up | down | left | right;
-  */
     end
 end
 
@@ -170,8 +148,8 @@ end
 
 always@*
 begin
-    if (step_cnt == 4'd15)
-        step_trig_temp = ~step_delay;
+    if (step_cnt != 4'd15)
+        step_trig_temp = step_delay;
     else
         step_trig_temp = 0;
 end
@@ -193,7 +171,7 @@ begin
         case (direction)
         `face_left : 
             begin
-                if (x != 4'd1)                  // edge judgment
+                if (x != 4'd0)                  // edge judgment
                     begin
                         x_temp = x - 1'b1;
                         y_temp = y;
@@ -206,7 +184,7 @@ begin
             end
          `face_right :
             begin
-                if (x != 4'd10)                 // edge judgment
+                if (x != 4'd9)                 // edge judgment
                     begin
                         x_temp = x + 1'b1;
                         y_temp = y;
@@ -219,7 +197,7 @@ begin
             end
          `face_up :
             begin
-                if (y != 4'd1)                  // edge judgment
+                if (y != 4'd0)                  // edge judgment
                     begin
                         x_temp = x;
                         y_temp = y - 1'b1;
@@ -232,7 +210,7 @@ begin
             end
          `face_down :
             begin
-                if (y != 4'd10)             // edge judgment
+                if (y != 4'd9)             // edge judgment
                     begin
                         x_temp = x;
                         y_temp = y + 1'b1;

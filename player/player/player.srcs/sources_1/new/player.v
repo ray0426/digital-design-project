@@ -24,7 +24,8 @@ module player(
 x, y, x_default, y_default,
 direction, step_cnt,
 up, down, left, right,
-clk, rst_n, clk_step
+clk, rst_n, clk_step,
+map, walk_en, map_pos
     );
 /*************************
     For player module:
@@ -50,7 +51,21 @@ reg [3:0] x_temp, y_temp;
 reg step_delay;                 // delay signal of (step_cnt == 4'd15)
 reg step_trig_temp;             // signal of (~delay signal) && (step_cnt == 4'd15)
 reg step_trig;                  // generated 100M Hz trigger signal
-
+output wire [99:0]map;
+assign map = 100'b0000000000_0100000010_0001001000_0100000010_0001001000_0001001000_0100000010_0001001000_0100000010_0000000000;
+output wire walk_en;
+output wire [7:0] map_pos;
+walk_judgment T0 (
+    .clk(clk),
+    .rst_n(rst_n),
+    .x(x),
+    .y(y),
+    .map(map),
+    .walk_en(walk_en),
+    .direction(direction),
+    .direction_temp(direction_temp),
+    .map_pos(map_pos)    
+);
 /****************************************
   direction judgment.
   ***************************************/
@@ -92,13 +107,13 @@ begin
         step_en_temp = 0;
     else
     begin 
-        if ((x != 4'd0) && (left == 1))
+        if ((x != 4'd0) && (left == 1) && (walk_en == 1))
             step_en_temp = step_en | left;
-        else if ((x != 4'd9) && (right == 1))
+        else if ((x != 4'd9) && (right == 1) && (walk_en == 1))
             step_en_temp = step_en | right;
-        else if ((y != 4'd0) && (up == 1))
+        else if ((y != 4'd0) && (up == 1) && (walk_en == 1))
             step_en_temp = step_en | up;
-        else if ((y != 4'd9) && (down == 1))
+        else if ((y != 4'd9) && (down == 1) && (walk_en == 1))
             step_en_temp = step_en | down;
         else
             step_en_temp = step_en;

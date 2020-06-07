@@ -59,8 +59,8 @@ freqdiv27 U_fd27(
 player U_player(
     .x(player_x),
     .y(player_y),
-    .x_default(1'b1),
-    .y_default(1'b1),
+    .x_default(1'b0),
+    .y_default(1'b0),
     .direction(player_dir),
     .step_cnt(player_cnt),
     .up(pb_up_pulse),
@@ -80,7 +80,7 @@ bomb U_bomb(
     .place_bomb_1(pb_mid_pulse),
     .x_2(player_x),
     .y_2(player_y),
-    .place_bomb_2(pb_mid_pulse),
+    .place_bomb_2(),
     .bomb_position(bomb_position)
     
     ,.enable(enable)

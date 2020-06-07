@@ -29,8 +29,6 @@ assign bomb_position = {bomb_x_11, bomb_y_11, bomb_x_12, bomb_y_12, bomb_x_13, b
                         bomb_x_14, bomb_y_14, bomb_x_21, bomb_y_21, bomb_x_22, bomb_y_22,
                         bomb_x_23, bomb_y_23, bomb_x_24, bomb_y_24};
 
-assign explode_12 = bomb_trig_11;
-
 bomb_cnt bomb_11(
     .clk(clk),
     .rst_n(rst_n),
@@ -87,7 +85,7 @@ bomb_cnt bomb_14(
     .bomb_y(bomb_y_14)
 );
 
-/*bomb_cnt bomb_21(
+bomb_cnt bomb_21(
     .clk(clk),
     .rst_n(rst_n),
     .en(en_21),
@@ -141,7 +139,7 @@ bomb_cnt bomb_24(
     .bomb_trig(bomb_trig_24),
     .bomb_x(bomb_x_24),
     .bomb_y(bomb_y_24)
-);*/
+);
 
 always @ *
     if (bomb_en_11 == 1'b0)
@@ -155,6 +153,26 @@ always @ *
     else
         {en_11, en_12, en_13, en_14} = 4'b0000;
     
-assign enable = {bomb_en_11, bomb_en_12, bomb_en_13, bomb_en_14};
+assign enable = {en_11, en_12, en_13, en_14};
+
+explosions U_explosions(
+    .bomb_position(bomb_position),
+    .bomb_trig_11(bomb_trig_11),
+    .bomb_trig_12(bomb_trig_12),
+    .bomb_trig_13(bomb_trig_13),
+    .bomb_trig_14(bomb_trig_14),
+    .bomb_trig_21(bomb_trig_21),
+    .bomb_trig_22(bomb_trig_22),
+    .bomb_trig_23(bomb_trig_23),
+    .bomb_trig_24(bomb_trig_24),
+    .explode_11(explode_11),
+    .explode_12(explode_12),
+    .explode_13(explode_13),
+    .explode_14(explode_14),
+    .explode_21(explode_21),
+    .explode_22(explode_22),
+    .explode_23(explode_23),
+    .explode_24(explode_24)
+);
 
 endmodule

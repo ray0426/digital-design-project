@@ -19,13 +19,14 @@ input place_bomb;
 input [3:0] player_x, player_y;
 input explode;
 output reg bomb_en;
-output bomb_trig;
+output reg bomb_trig;
 output [3:0] bomb_x, bomb_y;
 
 //output [27:0] bomb_cnt, bomb_cnt_temp;
 
 reg [27:0] bomb_cnt, bomb_cnt_temp;
 reg bomb_en_temp;
+wire bomb_trig_temp;
 reg [3:0] bomb_x, bomb_y, bomb_x_temp, bomb_y_temp;
 
 /*************************************
@@ -67,7 +68,13 @@ always@(posedge clk or negedge rst_n)
 /************************************
     trigger
   **********************************/
-assign bomb_trig = (bomb_cnt_temp == 28'b0 && bomb_cnt != 28'd0) ? 1'b1 : 1'b0;
+assign bomb_trig_temp = (bomb_cnt_temp == 28'b0 && bomb_cnt != 28'd0) ? 1'b1 : 1'b0;
+
+always@(posedge clk or negedge rst_n)
+    if (~rst_n)
+        bomb_trig <= 1'b0;
+    else
+        bomb_trig <= bomb_trig_temp;
 
 /************************************
     bomb position
@@ -88,8 +95,8 @@ always @ *
     end
 always @ (posedge clk or negedge rst_n)
     if (~rst_n) begin
-        bomb_x = 4'hF;
-        bomb_y = 4'hF;
+        bomb_x <= 4'hF;
+        bomb_y <= 4'hF;
     end 
     else begin
         bomb_x <= bomb_x_temp;

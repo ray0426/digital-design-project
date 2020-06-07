@@ -25,8 +25,8 @@ bomb_cnt U0(
     .bomb_x(bomb_x),
     .bomb_y(bomb_y)
     
-    ,.bomb_cnt(bomb_cnt)
-    ,.bomb_cnt_temp(bomb_cnt_temp)
+    //,.bomb_cnt(bomb_cnt)
+    //,.bomb_cnt_temp(bomb_cnt_temp)
 );
 
 initial

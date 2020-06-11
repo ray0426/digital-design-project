@@ -26,12 +26,12 @@ wire [3:0] player_x, player_y;
 wire [3:0] player_cnt;
 wire [1:0] player_dir;
 wire clk_step;
-wire [63:0] bomb_position;
+wire [63:0] bomb_position, exploded;
 
 wire [3:0] enable;
 
 assign {vgaRed, vgaGreen, vgaBlue} = (valid == 1'b1) ? pixel :12'h0;
-assign led[13:0] = {enable, player_dir, bomb_position[63:56]};
+assign led[15:0] = {exploded[63:56], bomb_position[63:56]};
 
 inputs U_in(
     .clk(clk),
@@ -81,7 +81,8 @@ bomb U_bomb(
     .x_2(player_x),
     .y_2(player_y),
     .place_bomb_2(),
-    .bomb_position(bomb_position)
+    .bomb_position(bomb_position),
+    .exploded(exploded)
     
     ,.enable(enable)
 );

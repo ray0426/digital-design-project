@@ -10,6 +10,9 @@ module field(
     player_cnt,
     player_dir,
     bomb_position,
+    exploded,
+    range,
+    item_position,
     pixel
 );
 input clk, clk_25MHz;
@@ -19,7 +22,9 @@ input [9:0] v_cnt;
 input [3:0] player_x, player_y;
 input [3:0] player_cnt;
 input [1:0] player_dir;
-input [63:0] bomb_position;
+input [63:0] bomb_position, exploded;
+input [3:0] range;
+input [71:0] item_position;
 output [11:0] pixel;
 
 wire [9:0] h_cnt_fix, v_cnt_fix;
@@ -27,8 +32,8 @@ wire [8:0] block_addr_h, block_addr_v;
 wire [4:0] addr_rela_h, addr_rela_v;
 
 reg [11:0] pixel;
-wire [11:0] ground_pixel, player_pixel, items_pixel;
-wire ground_show_en, player_show_en, items_show_en;
+wire [11:0] ground_pixel, player_pixel, items_pixel, bombs_pixel;
+wire ground_show_en, player_show_en, items_show_en, bombs_show_en;
 
 // 640*480
 assign h_cnt_fix = (h_cnt - 25);
@@ -62,7 +67,7 @@ display_player U_player_show(
 
 display_items U_items_show(
     .clk(clk),
-    .bombs(bomb_position),
+    .items(item_position),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
     .addr_rela_h(addr_rela_h),
@@ -71,11 +76,26 @@ display_items U_items_show(
     .items_show_en(items_show_en)
 );
 
+display_bombs U_bombs_show(
+    .clk(clk),
+    .bombs(bomb_position),
+    .exploded(exploded),
+    .range(range),
+    .block_addr_h(block_addr_h),
+    .block_addr_v(block_addr_v),
+    .addr_rela_h(addr_rela_h),
+    .addr_rela_v(addr_rela_v),
+    .bombs_pixel(bombs_pixel),
+    .bombs_show_en(bombs_show_en)
+);
+
 always @ *
-    if (items_show_en == 1'b1)
-        pixel = items_pixel;
+    if (bombs_show_en == 1'b1)
+        pixel = bombs_pixel;
     else if (player_show_en == 1'b1)
         pixel = player_pixel;
+    else if (items_show_en == 1'b1)
+        pixel = items_pixel;
     else if (ground_show_en == 1'b1)
         pixel = ground_pixel;
     else

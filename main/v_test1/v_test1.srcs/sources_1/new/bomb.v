@@ -9,15 +9,13 @@ module bomb(
     y_2,
     place_bomb_2,
     bomb_position,
-    exploded,
-    enable
+    exploded
 );
 input clk, rst_n;
 input [3:0] x_1, y_1, x_2, y_2;
 input place_bomb_1, place_bomb_2;
 output [63:0] bomb_position;
 output [63:0] exploded;
-output [3:0] enable;
 
 
 reg en_11, en_12, en_13, en_14, en_21, en_22, en_23, en_24;

@@ -27,6 +27,11 @@ wire [3:0] player_cnt;
 wire [1:0] player_dir;
 wire clk_step;
 wire [63:0] bomb_position, exploded;
+wire [3:0] bomb_range;
+wire [71:0] item_position;
+
+assign bomb_range = 4'd2;
+assign item_position = 72'hFF35FF_76FFFF_FFFF53;
 
 wire [3:0] enable;
 
@@ -83,8 +88,6 @@ bomb U_bomb(
     .place_bomb_2(),
     .bomb_position(bomb_position),
     .exploded(exploded)
-    
-    ,.enable(enable)
 );
 
 // Frequency Divider
@@ -104,6 +107,9 @@ field U_field(
     .player_cnt(player_cnt),
     .player_dir(player_dir),
     .bomb_position(bomb_position),
+    .exploded(exploded),
+    .range(bomb_range),
+    .item_position(item_position),
     .pixel(pixel)
 );
 

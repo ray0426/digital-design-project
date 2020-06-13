@@ -29,6 +29,7 @@ wire clk_step;
 wire [63:0] bomb_position, exploded;
 wire [3:0] bomb_range;
 wire [71:0] item_position;
+wire pl_die_1, pl_die_2;
 
 assign bomb_range = 4'd2;
 assign item_position = 72'hFF35FF_76FFFF_FFFF53;
@@ -36,7 +37,7 @@ assign item_position = 72'hFF35FF_76FFFF_FFFF53;
 wire [3:0] enable;
 
 assign {vgaRed, vgaGreen, vgaBlue} = (valid == 1'b1) ? pixel :12'h0;
-assign led[15:0] = {exploded[63:56], bomb_position[63:56]};
+assign led[1:0] = {pl_die_1, pl_die_2};
 
 inputs U_in(
     .clk(clk),
@@ -87,7 +88,9 @@ bomb U_bomb(
     .y_2(player_y),
     .place_bomb_2(),
     .bomb_position(bomb_position),
-    .exploded(exploded)
+    .exploded(exploded),
+    .pl_die_1(pl_die_1),
+    .pl_die_2(pl_die_2)
 );
 
 // Frequency Divider

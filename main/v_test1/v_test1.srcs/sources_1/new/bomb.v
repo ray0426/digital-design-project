@@ -9,14 +9,16 @@ module bomb(
     y_2,
     place_bomb_2,
     bomb_position,
-    exploded
+    exploded,
+    pl_die_1,
+    pl_die_2
 );
 input clk, rst_n;
 input [3:0] x_1, y_1, x_2, y_2;
 input place_bomb_1, place_bomb_2;
 output [63:0] bomb_position;
 output [63:0] exploded;
-
+output pl_die_1, pl_die_2;
 
 reg en_11, en_12, en_13, en_14, en_21, en_22, en_23, en_24;
 wire explode_11, explode_12, explode_13, explode_14, explode_21, explode_22, explode_23, explode_24;
@@ -26,6 +28,7 @@ wire bomb_trig_21, bomb_trig_22, bomb_trig_23, bomb_trig_24;
 wire [3:0] bomb_x_11, bomb_x_12, bomb_x_13, bomb_x_14, bomb_x_21, bomb_x_22, bomb_x_23, bomb_x_24;
 wire [3:0] bomb_y_11, bomb_y_12, bomb_y_13, bomb_y_14, bomb_y_21, bomb_y_22, bomb_y_23, bomb_y_24;
 wire [7:0] bomb_trig;
+wire pl_die_1, pl_die_2;
 
 assign bomb_position = {bomb_x_11, bomb_y_11, bomb_x_12, bomb_y_12, bomb_x_13, bomb_y_13,
                         bomb_x_14, bomb_y_14, bomb_x_21, bomb_y_21, bomb_x_22, bomb_y_22,
@@ -156,8 +159,6 @@ always @ *
         {en_11, en_12, en_13, en_14} = 4'b0001;
     else
         {en_11, en_12, en_13, en_14} = 4'b0000;
-    
-assign enable = {en_11, en_12, en_13, en_14};
 
 explosions U_explosions(
     .bomb_position(bomb_position),
@@ -185,6 +186,15 @@ exploded_pos exp_pos(
     .bomb_position(bomb_position),
     .bomb_trig(bomb_trig),
     .exploded(exploded)
+);
+
+bomb_kill kill_p1(
+    .clk(clk),
+    .rst_n(rst_n),
+    .x(x_1),
+    .y(y_1),
+    .exploded(exploded),
+    .pl_die(pl_die_1)
 );
 
 endmodule

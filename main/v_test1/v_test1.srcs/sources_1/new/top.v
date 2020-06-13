@@ -30,10 +30,10 @@ wire [63:0] bomb_position, exploded;
 wire [3:0] bomb_range;
 wire [71:0] item_position;
 wire pl_die_1, pl_die_2;
+wire [17:0] getitem;
 
 assign rst_n = ~sw[0];
 assign bomb_range = 4'd2;
-assign item_position = 72'hFF35FF_76FFFF_FFFF53;
 assign pl1_input = {pb_up_pulse, pb_down_pulse, pb_left_pulse, pb_right_pulse} & {4{sw[1]}};
 assign pl2_input = {pb_up_pulse, pb_down_pulse, pb_left_pulse, pb_right_pulse} & {4{~sw[1]}};
 
@@ -86,6 +86,24 @@ bomb U_bomb(
     .exploded(exploded),
     .pl_die_1(pl_die_1),
     .pl_die_2(pl_die_2)
+);
+
+item_generator item_generator(
+    .clk(clk),
+    .rst_n(rst_n),
+    .get(getitem),
+    .item_position(item_position)
+);
+
+player_eat player_eat(
+    .clk(clk),
+    .rst_n(rst_n),
+    .x_1(player1_x),
+    .y_1(player1_y),
+    .x_2(player2_x),
+    .y_2(player2_y),
+    .item_position(item_position),
+    .get(getitem)
 );
 
 // Frequency Divider

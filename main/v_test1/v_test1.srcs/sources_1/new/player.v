@@ -24,6 +24,7 @@ module player(
     clk,
     clk_step,
     rst_n,
+    bomb_position,
     x,
     y,
     x_default,
@@ -34,9 +35,7 @@ module player(
     down,
     left,
     right
-    
-    
-    );
+);
 /*************************
     For player module:
     1. x is the position in horizontal axis
@@ -47,9 +46,10 @@ module player(
     6. step_cnt are the output counter for moving
    ****************************/
    
-input x_default, y_default;     // default value input
+input [3:0] x_default, y_default;     // default value input
 input up, down, left, right;
 input clk, clk_step, rst_n;
+input [63:0] bomb_position;
 output reg [3:0] x,y;
 output reg [1:0] direction;
 output reg [3:0] step_cnt;
@@ -59,21 +59,17 @@ reg [3:0] step_cnt_temp, step_cnt_delay;
 reg step_en, step_en_temp;
 reg [3:0] x_temp, y_temp;
 wire step_trig;                  // generated 100M Hz trigger signal
-wire [99:0]map;
-assign map = 100'b0000000000_0100000010_0001001000_0100000010_0001001000_0001001000_0100000010_0001001000_0100000010_0000000000;
 wire walk_en;
-wire [7:0] map_pos;
 
 walk_judgment T0 (
     .clk(clk),
     .rst_n(rst_n),
     .x(x),
     .y(y),
-    .map(map),
     .walk_en(walk_en),
     .direction(direction),
     .direction_temp(direction_temp),
-    .map_pos(map_pos)    
+    .bombs(bomb_position)
 );
 
 /****************************************

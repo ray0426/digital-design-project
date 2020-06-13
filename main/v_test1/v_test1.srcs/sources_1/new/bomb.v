@@ -160,6 +160,18 @@ always @ *
     else
         {en_11, en_12, en_13, en_14} = 4'b0000;
 
+always @ *
+    if (bomb_en_21 == 1'b0)
+        {en_21, en_22, en_23, en_24} = 4'b1000;
+    else if (bomb_en_22 == 1'b0)
+        {en_21, en_22, en_23, en_24} = 4'b0100;
+    else if (bomb_en_23 == 1'b0)
+        {en_21, en_22, en_23, en_24} = 4'b0010;
+    else if (bomb_en_24 == 1'b0)
+        {en_21, en_22, en_23, en_24} = 4'b0001;
+    else
+        {en_21, en_22, en_23, en_24} = 4'b0000;
+
 explosions U_explosions(
     .bomb_position(bomb_position),
     .bomb_trig_11(bomb_trig_11),
@@ -195,6 +207,15 @@ bomb_kill kill_p1(
     .y(y_1),
     .exploded(exploded),
     .pl_die(pl_die_1)
+);
+
+bomb_kill kill_p2(
+    .clk(clk),
+    .rst_n(rst_n),
+    .x(x_2),
+    .y(y_2),
+    .exploded(exploded),
+    .pl_die(pl_die_2)
 );
 
 endmodule

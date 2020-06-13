@@ -1,6 +1,6 @@
 module top(
   input clk,
-  input rst,
+  input [15:0] sw,
   input pb_up,
   input pb_left,
   input pb_mid,
@@ -14,6 +14,7 @@ module top(
   output [15:0] led
 );
 
+wire rst_n;
 wire clk_25MHz;
 wire clk_22;
 wire [11:0] pixel;
@@ -21,18 +22,20 @@ wire field_valid;
 wire [9:0] h_cnt; //640
 wire [9:0] v_cnt;  //480
 wire pb_left_pulse, pb_right_pulse, pb_down_pulse, pb_up_pulse, pb_mid_pulse;
-wire valid;
-wire [3:0] player_x, player_y;
-wire [3:0] player_cnt;
-wire [1:0] player_dir;
-wire clk_step;
+wire [3:0] pl1_input, pl2_input;
+wire [3:0] player1_x, player1_y, player2_x, player2_y;
+wire [3:0] player1_cnt, player2_cnt;
+wire [1:0] player1_dir, player2_dir;
 wire [63:0] bomb_position, exploded;
 wire [3:0] bomb_range;
 wire [71:0] item_position;
 wire pl_die_1, pl_die_2;
 
+assign rst_n = ~sw[0];
 assign bomb_range = 4'd2;
 assign item_position = 72'hFF35FF_76FFFF_FFFF53;
+assign pl1_input = {pb_up_pulse, pb_down_pulse, pb_left_pulse, pb_right_pulse} & {4{sw[1]}};
+assign pl2_input = {pb_up_pulse, pb_down_pulse, pb_left_pulse, pb_right_pulse} & {4{~sw[1]}};
 
 wire [3:0] enable;
 
@@ -41,7 +44,7 @@ assign led[1:0] = {pl_die_1, pl_die_2};
 
 inputs U_in(
     .clk(clk),
-    .rst_n(~rst),
+    .rst_n(rst_n),
     .pb_left(pb_left),
     .pb_right(pb_right),
     .pb_down(pb_down),
@@ -54,39 +57,31 @@ inputs U_in(
     .pb_mid_pulse(pb_mid_pulse)
 );
 
-freqdiv27 U_fd27(
+players players(
     .clk(clk),
-    .rst_n(~rst),
-    .set_freq(27'd390624),
-    .clk_time(clk_step),
-    .clk_ctl()
-);
-
-player U_player(
-    .x(player_x),
-    .y(player_y),
-    .x_default(1'b0),
-    .y_default(1'b0),
-    .direction(player_dir),
-    .step_cnt(player_cnt),
-    .up(pb_up_pulse),
-    .down(pb_down_pulse),
-    .left(pb_left_pulse),
-    .right(pb_right_pulse),
-    .clk(clk),
-    .rst_n(~rst),
-    .clk_step(clk_step)
+    .rst_n(rst_n),
+    .bomb_position(bomb_position),
+    .pl1_input(pl1_input),
+    .pl2_input(pl2_input),
+    .player1_x(player1_x),
+    .player1_y(player1_y),
+    .player1_dir(player1_dir),
+    .player1_cnt(player1_cnt),
+    .player2_x(player2_x),
+    .player2_y(player2_y),
+    .player2_dir(player2_dir),
+    .player2_cnt(player2_cnt)
 );
 
 bomb U_bomb(
     .clk(clk),
-    .rst_n(~rst),
-    .x_1(player_x),
-    .y_1(player_y),
-    .place_bomb_1(pb_mid_pulse),
-    .x_2(player_x),
-    .y_2(player_y),
-    .place_bomb_2(),
+    .rst_n(rst_n),
+    .x_1(player1_x),
+    .y_1(player1_y),
+    .place_bomb_1(pb_mid_pulse && sw[1]),
+    .x_2(player2_x),
+    .y_2(player2_y),
+    .place_bomb_2(pb_mid_pulse && ~sw[1]),
     .bomb_position(bomb_position),
     .exploded(exploded),
     .pl_die_1(pl_die_1),
@@ -102,13 +97,17 @@ clock_divisor clk_wiz_0_inst(
 field U_field(
     .clk(clk),
     .clk_25MHz(clk_25MHz),
-    .rst(~rst),
+    .rst(rst_n),
     .h_cnt(h_cnt),
     .v_cnt(v_cnt),
-    .player_x(player_x),
-    .player_y(player_y),
-    .player_cnt(player_cnt),
-    .player_dir(player_dir),
+    .player1_x(player1_x),
+    .player1_y(player1_y),
+    .player1_cnt(player1_cnt),
+    .player1_dir(player1_dir),
+    .player2_x(player2_x),
+    .player2_y(player2_y),
+    .player2_cnt(player2_cnt),
+    .player2_dir(player2_dir),
     .bomb_position(bomb_position),
     .exploded(exploded),
     .range(bomb_range),
@@ -119,7 +118,7 @@ field U_field(
 // Render the picture by VGA controller
 vga_controller   vga_inst(
   .pclk(clk_25MHz),
-  .reset(rst),
+  .reset(~rst_n),
   .hsync(hsync),
   .vsync(vsync),
   .valid(valid),

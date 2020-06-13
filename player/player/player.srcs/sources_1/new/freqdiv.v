@@ -20,9 +20,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module freqdiv(clk,  clk_ctl,rst,clk_1, clk_100);
+module freqdiv(clk,  clk_ctl,rst_n,clk_1, clk_100);
 input clk;
-input rst;
+input rst_n;
 output reg [1:0] clk_ctl; // 16~17 bit
 output reg clk_1;
 output reg clk_100;
@@ -34,9 +34,9 @@ begin
    cnt_temp = cnt + 1'b1;
 end
 
-always@(posedge clk or posedge rst)
+always@(posedge clk or negedge rst_n)
 begin
-    if (rst == 1)
+    if (rst_n == 0)
         cnt <= 0;
     else
         cnt <= cnt_temp;

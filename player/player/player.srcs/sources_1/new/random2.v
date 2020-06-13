@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/06/06 18:41:02
+// Create Date: 2020/06/13 14:18:48
 // Design Name: 
-// Module Name: random
+// Module Name: random2
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,18 +19,20 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+
 `include "global.v"
-module random(
+module random2(
     clk, rst_n, clk_1,
-    random_num, init
+    random_num, init,
+    item_position
 );
 input clk, rst_n, clk_1;
-input [3:0]init;
+input [5:0]init;
 output reg [3:0] random_num;
+output reg [3:0] item_position;
 reg [3:0] item_pos;
 
-reg [3:0]q;
-reg [3:0] cnt, cnt_temp;
+reg [5:0]q;
 
 always@(posedge clk or negedge rst_n)
 begin
@@ -38,10 +40,12 @@ begin
         q <= init;
     else
     begin
+        q[5] <= q[4];
+        q[4] <= q[3];
         q[3] <= q[2];
         q[2] <= q[1];
         q[1] <= q[0];
-        q[0] <= q[3] ^ q[2];
+        q[0] <= q[4] ^ q[5];
     end
 end
 
@@ -53,24 +57,7 @@ begin
         random_num = q;
 end
 
-always@*
-    if (cnt == 4'd9)
-        item_pos = random_num;
-    else
-        item_pos = `item_pos_none;
-        
-always@*
-    if (cnt == 4'd9)
-        cnt_temp = 0;
-    else
-        cnt_temp = cnt + 1'b1;
-        
 
-always@(posedge clk or negedge rst_n)
-begin
-    if (rst_n == 0)
-        cnt <= 0;
-    else
-        cnt <= cnt_temp;
-end
 endmodule
+
+

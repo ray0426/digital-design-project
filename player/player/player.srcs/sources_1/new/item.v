@@ -22,35 +22,119 @@
 `include "global.v"
 module item(
     clk, clk_1, rst_n,
-    x, y, random_num_x, random_num_y,
-    get_item1, get_item2, get_item3, item
+    get_item_1, get_item_2, get_item_3, item,
+    en,
+    random_num_x, random_num_y,
+    trig
 );
 input clk, rst_n, clk_1;
-input [3:0]x, y;
-input [3:0]random_num_x, random_num_y;
+input en;
+input wire [3:0]random_num_x, random_num_y;
 
 
-output reg get_item1, get_item2, get_item3;
+input get_item_1, get_item_2, get_item_3;
 output reg [23:0] item;
-wire trig;
-reg x1, x2, x3;
-reg y1, y2, y3;
-reg [3:0]random_num_x_temp, random_num_y_temp;
+reg [3:0] item_pos_x, item_pos_y;
+input wire trig;
 reg [3:0]item_1_x, item_2_x, item_3_x,item_1_y, item_2_y, item_3_y;
 reg [3:0]item_1_x_temp, item_2_x_temp, item_3_x_temp, item_1_y_temp, item_2_y_temp, item_3_y_temp;
 reg en1, en2, en3;
 
-reg delay1, delay2, delay3;
 
 always@*
-    item = {item_1_x, item_2_x, item_3_x,item_1_y, item_2_y, item_3_y};
-
+    item = {item_1_x, item_1_y, item_2_x, item_2_y, item_3_x, item_3_y};
+/*
 item_cnt Q0(
     .clk(clk),
     .clk_1(clk_1), 
     .rst_n(rst_n),
     .trig(trig)
 );
+
+random Ux_digit(
+    .clk(clk),
+    .clk_1(clk_1), 
+    .rst_n(rst_n),
+    .init(init_x),
+    .random_num(random_num_x)
+);
+
+random2 Uy_digit(
+    .clk(clk),
+    .clk_1(clk_1), 
+    .rst_n(rst_n),
+    .init(init_y),
+    .random_num(random_num_y)
+);
+*/
+always@*
+begin
+    if (en == 1)
+    begin
+        if (random_num_x == 4'd1)
+        begin
+            if ((random_num_y == 4'd1) || (random_num_y == 4'd3) || (random_num_y == 4'd6) || (random_num_y == 4'd8))
+            begin
+                item_pos_x = `item_pos_none;
+                item_pos_y = `item_pos_none;
+            end
+            else
+            begin
+                item_pos_x = random_num_x;
+                item_pos_y = random_num_y;        
+            end
+        end
+        else if (random_num_x == 4'd3)
+        begin
+            if ((random_num_y == 4'd2) || (random_num_y == 4'd4) || (random_num_y == 4'd5) || (random_num_y == 4'd7))
+            begin
+                item_pos_x = `item_pos_none;
+                item_pos_y = `item_pos_none;
+            end
+            else
+            begin
+                item_pos_x = random_num_x;
+                item_pos_y = random_num_y;        
+            end
+        end
+        else if (random_num_x == 4'd6)
+        begin
+            if ((random_num_y == 4'd2) || (random_num_y == 4'd4) || (random_num_y == 4'd5) || (random_num_y == 4'd7))
+            begin
+                item_pos_x = `item_pos_none;
+                item_pos_y = `item_pos_none;
+            end
+            else
+            begin
+                item_pos_x = random_num_x;
+                item_pos_y = random_num_y;        
+            end
+        end
+        else if (random_num_x == 4'd8)
+        begin
+            if ((random_num_y == 4'd1) || (random_num_y == 4'd3) || (random_num_y == 4'd6) || (random_num_y == 4'd8))
+            begin
+                item_pos_x = `item_pos_none;
+                item_pos_y = `item_pos_none;
+            end
+            else
+            begin
+                item_pos_x = random_num_x;
+                item_pos_y = random_num_y;        
+            end
+        end
+        else
+        begin
+            item_pos_x = random_num_x;
+            item_pos_y = random_num_y; 
+        end
+    end
+    else
+    begin
+        item_pos_x = `item_pos_none;
+        item_pos_y = `item_pos_none;
+    end        
+end
 
 always@(posedge clk or negedge rst_n)
 begin
@@ -93,8 +177,8 @@ begin
     begin    //  {item1_1_x, item1_1_y} == 8'b11111111;
         if (en1)
         begin
-            item_1_x_temp = random_num_x;
-            item_1_y_temp = random_num_y;
+            item_1_x_temp = item_pos_x;
+            item_1_y_temp = item_pos_y;
         end 
         else
         begin
@@ -104,7 +188,7 @@ begin
     end
     else
     begin
-        if ((x == item_1_x_temp) && (y == item_1_y_temp))
+        if (get_item_1 == 1)
         begin
             item_1_x_temp = `item_disabled;
             item_1_y_temp = `item_disabled;
@@ -123,8 +207,8 @@ begin
     begin
         if (en2) 
         begin
-           item_2_x_temp = random_num_x;
-           item_2_y_temp = random_num_y;
+           item_2_x_temp = item_pos_x;
+           item_2_y_temp = item_pos_y;
         end 
         else
         begin
@@ -134,7 +218,7 @@ begin
     end
     else
     begin
-        if ((x == item_1_x_temp) && (y == item_2_y_temp))
+        if (get_item_2 == 1)
         begin
             item_2_x_temp = `item_disabled;
             item_2_y_temp = `item_disabled;
@@ -153,8 +237,8 @@ begin
     begin
         if (en3) 
         begin
-           item_3_x_temp = random_num_x;
-           item_3_y_temp = random_num_y;
+           item_3_x_temp = item_pos_x;
+           item_3_y_temp = item_pos_y;
         end 
         else
         begin
@@ -164,7 +248,7 @@ begin
     end
     else
     begin
-        if ((x == item_3_x_temp) && (y == item_3_y_temp))
+        if (get_item_3 == 1)
         begin
             item_3_x_temp = `item_disabled;
             item_3_y_temp = `item_disabled;
@@ -177,13 +261,14 @@ begin
     end
 end
 
+/*
 always@(posedge clk or negedge rst_n)
 begin
     if (rst_n == 0)
         delay1 <= 0;
     else
     begin
-        if (item_1_x != `item_disabled)
+        if ((item_1_x != `item_disabled) && (item_1_x_temp == `item_disabled))
             delay1 <= 1;
         else
             delay1 <= 0;
@@ -191,12 +276,7 @@ begin
 end
 
 always@*
-begin
-    if (item_1_x == `item_disabled)
-        get_item1 = delay1;
-    else
-        get_item1 = 0;
-end
+    get_item1 = delay1;
 
 always@(posedge clk or negedge rst_n)
 begin
@@ -204,7 +284,7 @@ begin
         delay2 <= 0;
     else
     begin
-        if (item_2_x != `item_disabled)
+        if ((item_2_x != `item_disabled) && (item_2_x_temp == `item_disabled))
             delay2 <= 1;
         else
             delay2 <= 0;
@@ -212,12 +292,7 @@ begin
 end
 
 always@*
-begin
-    if (item_2_x == `item_disabled)
-        get_item2 = delay2;
-    else
-        get_item2 = 0;
-end
+    get_item2 = delay2;
 
 always@(posedge clk or negedge rst_n)
 begin
@@ -225,7 +300,7 @@ begin
         delay3 <= 0;
     else
     begin
-        if (item_3_x != `item_disabled)
+        if ((item_3_x != `item_disabled) && (item_3_x_temp == `item_disabled))
             delay3 <= 1;
         else
             delay3 <= 0;
@@ -233,10 +308,6 @@ begin
 end
 
 always@*
-begin
-    if (item_3_x == `item_disabled)
-        get_item3 = delay3;
-    else
-        get_item3 = 0;
-end
+    get_item3 = delay3;
+    */
 endmodule

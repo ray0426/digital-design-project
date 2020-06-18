@@ -1,24 +1,3 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2020/05/09 20:14:55
-// Design Name: 
-// Module Name: ring_note
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 `include "global.v"
 `include "notes.v"
 module ring_note(
@@ -84,34 +63,6 @@ begin
     ring_next = {2'b01, 768'b0, ring[247:0], ring[255:248]};
 end
 
-/*
-always@*
-begin
-    if (music_mode == `play_frog)
-        clk_sel = `beat_126;
-    else
-        clk_sel = `beat_63;
-end
-
-always@*
-begin
-    if (music_mode == `play_frog)
-        ring_next = {514'b0, ring[503:0], ring[511:504]};
-    else
-        ring_next = {2'b01, 768'b0, ring[247:0], ring[255:248]};
-end
-
-always @(posedge beat_clk or negedge rst)
-begin
-    if (~rst)
-        if (music_mode == `play_black)
-            ring <= {2'b01, 768'b0, `black};
-        else
-            ring <= {514'b0, `frog};
-    else
-        ring <= ring_next;
-end
-*/
 always @ *
 begin
     case(douta)

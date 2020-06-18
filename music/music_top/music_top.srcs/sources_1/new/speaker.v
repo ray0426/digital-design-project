@@ -1,24 +1,3 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2020/05/02 11:48:53
-// Design Name: 
-// Module Name: speaker
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 `include "global.v"
 `include "notes.v"
 module speaker(
@@ -46,7 +25,6 @@ output [15:0] leds;
 output audio_mclk, audio_lrck, audio_sck, audio_sdin;
 wire [15:0] amp_down, amp_up;
 wire [15:0] audio_left, audio_right;
-wire [21:0] note, note1;
 wire [1:0] note_num;
 wire [3:0] dig0, dig1, dig2, dig3;
 wire [3:0] ssd_in;
@@ -56,16 +34,13 @@ wire clk_100;
 wire music_mode, music_mode_cur;
 reg music_rst;
 wire [1025:0] ring;
-wire beat_clk;
-wire [7:0] addr, addr_f;
-wire [7:0] douta, doutb;
+
+wire [7:0] note_8bit_1, note_8bit_2, note_8bit_3, note_8bit_4;
+wire [21:0] note1, note2, note3, note4;
+
+
 assign amp_down = 16'hFF00;
 assign amp_up = 16'h0200;
-assign leds[1] = music_mode;
-assign leds[2] = pb_right;
-assign note_num = ring[1025 : 1024];
-assign leds[4] = ring[1025];
-assign leds[5] = ring[1024];
 
 always@*
 begin
@@ -99,7 +74,7 @@ freqdiv27 U_fd(
     .clk_ctl(ssd_ctl_en) // clock for scan control
 );
 
-ring_note U_rn(
+/*ring_note U_rn(
     .clk(clk),
     .rst_n(rst_n),
     .note(note),
@@ -112,13 +87,41 @@ ring_note U_rn(
     .beat_clk(beat_clk),
     .douta(douta),
     .doutb(doutb)
+);*/
+
+music_memories music_memory(
+    .clk(clk),
+    .rst_n(rst_n),
+    .music(4'd0),
+    .music_change(pb_left_pulse),
+    .play_enable(1'b1),
+    .note1(note_8bit_1),
+    .note2(note_8bit_2),
+    .note3(note_8bit_3),
+    .note4(note_8bit_4)
+    
+    ,.dig0(dig0),
+    .dig1(dig1),
+    .beat_clk(leds[0]),
+    .leds(leds[10:1])
+);
+
+note_decoder note_decoder(
+    .note1(note_8bit_1),
+    .note2(note_8bit_2),
+    .note3(note_8bit_3),
+    .note4(note_8bit_4),
+    .note_out1(note1),
+    .note_out2(note2),
+    .note_out3(note3),
+    .note_out4(note4)
 );
 
 buzzer_control U_bc(
     .clk(clk),
     .rst_n(rst_n),
-    .note1(note),
-    .note2(note1),
+    .note1(note1),
+    .note2(22'd0),
     .note3(22'd0),
     .note4(22'd0),
     .amp(amp_up),
@@ -167,31 +170,4 @@ display U_display(
     .segs(segs) // 7-segment display output
 );
 
-addr_cnt address_black(
-    .rst_n(rst_n),
-    .clk(beat_clk),
-    .addr(addr)
-);
-
-addr_cnt_frog address_frog(
-    .rst_n(rst_n),
-    .clk(beat_clk),
-    .addr_f(addr_f)
-);
-// Use reduced 320x240 address to output the saved picture from RAM 
-blk_mem_gen_1 blk_mem_gen_1(
-  .clka(beat_clk),
-  .wea(0),
-  .addra(addr),
-  .dina(data),
-  .douta(douta)
-); 
-
-blk_mem_gen_2 blk_mem_gen_2(
-  .clka(beat_clk),
-  .wea(0),
-  .addra(addr_f),
-  .dina(data),
-  .douta(doutb)
-); 
 endmodule

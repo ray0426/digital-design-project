@@ -52,11 +52,11 @@
 -- The following code must appear in the VHDL architecture header.
 
 ------------- Begin Cut here for COMPONENT Declaration ------ COMP_TAG
-COMPONENT blk_mem_gen_2
+COMPONENT test_1
   PORT (
     clka : IN STD_LOGIC;
     wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
-    addra : IN STD_LOGIC_VECTOR(8 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(5 DOWNTO 0);
     dina : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
   );
@@ -67,7 +67,7 @@ END COMPONENT;
 -- body. Substitute your own instance name and net names.
 
 ------------- Begin Cut here for INSTANTIATION Template ----- INST_TAG
-your_instance_name : blk_mem_gen_2
+your_instance_name : test_1
   PORT MAP (
     clka => clka,
     wea => wea,
@@ -77,7 +77,7 @@ your_instance_name : blk_mem_gen_2
   );
 -- INST_TAG_END ------ End INSTANTIATION Template ---------
 
--- You must compile the wrapper file blk_mem_gen_2.vhd when simulating
--- the core, blk_mem_gen_2. When compiling the wrapper file, be sure to
+-- You must compile the wrapper file test_1.vhd when simulating
+-- the core, test_1. When compiling the wrapper file, be sure to
 -- reference the VHDL simulation library.
 

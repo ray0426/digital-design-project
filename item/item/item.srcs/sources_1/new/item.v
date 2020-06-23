@@ -3,7 +3,7 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/06/05 14:43:35
+// Create Date: 2020/06/23 23:16:20
 // Design Name: 
 // Module Name: item
 // Project Name: 
@@ -19,57 +19,34 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+
 `include "global.v"
 module item(
-    clk, clk_1, rst_n,
+    clk, rst_n,
     get_item_1, get_item_2, get_item_3, item,
     en,
     random_num_x, random_num_y,
-    item_pos_x, item_pos_y,
-    item_1_x, item_2_x, item_3_x,item_1_y, item_2_y, item_3_y,
-    item_1_x_temp, item_2_x_temp, item_3_x_temp, item_1_y_temp, item_2_y_temp, item_3_y_temp,
-    en1, en2, en3,
+//    item_pos_x, item_pos_y,
+ //   item_1_x, item_2_x, item_3_x,item_1_y, item_2_y, item_3_y,
+ //   item_1_x_temp, item_2_x_temp, item_3_x_temp, item_1_y_temp, item_2_y_temp, item_3_y_temp,
+  //  en1, en2, en3,
     trig
 );
-input clk, rst_n, clk_1;
+input clk, rst_n;
 input en;
 input wire [3:0]random_num_x, random_num_y;
 input trig;
-
 input get_item_1, get_item_2, get_item_3;
 output reg [23:0] item;
-output reg [3:0] item_pos_x, item_pos_y;
-output reg [3:0]item_1_x, item_2_x, item_3_x,item_1_y, item_2_y, item_3_y;
-output reg [3:0]item_1_x_temp, item_2_x_temp, item_3_x_temp, item_1_y_temp, item_2_y_temp, item_3_y_temp;
-output reg en1, en2, en3;
+reg [3:0] item_pos_x, item_pos_y;
+reg [3:0]item_1_x, item_2_x, item_3_x,item_1_y, item_2_y, item_3_y;
+ reg [3:0]item_1_x_temp, item_2_x_temp, item_3_x_temp, item_1_y_temp, item_2_y_temp, item_3_y_temp;
+ reg en1, en2, en3;
 
 
 always@*
     item = {item_1_x, item_1_y, item_2_x, item_2_y, item_3_x, item_3_y};
-/*
-item_cnt Q0(
-    .clk(clk),
-    .clk_1(clk_1), 
-    .rst_n(rst_n),
-    .trig(trig)
-);
 
-random Ux_digit(
-    .clk(clk),
-    .clk_1(clk_1), 
-    .rst_n(rst_n),
-    .init(init_x),
-    .random_num(random_num_x)
-);
-
-random2 Uy_digit(
-    .clk(clk),
-    .clk_1(clk_1), 
-    .rst_n(rst_n),
-    .init(init_y),
-    .random_num(random_num_y)
-);
-*/
 always@*
 begin
     if (en == 1)

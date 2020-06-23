@@ -3,7 +3,7 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/06/13 16:51:34
+// Create Date: 2020/06/23 23:20:46
 // Design Name: 
 // Module Name: item_pos_gen
 // Project Name: 
@@ -54,3 +54,4 @@ random2 Uy_digit(
 );
 
 endmodule
+

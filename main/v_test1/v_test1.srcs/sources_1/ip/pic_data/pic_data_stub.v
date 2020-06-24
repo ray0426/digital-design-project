@@ -1,7 +1,7 @@
 // Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2016.2 (win64) Build 1577090 Thu Jun  2 16:32:40 MDT 2016
-// Date        : Sat Jun 06 15:34:17 2020
+// Date        : Wed Jun 24 20:33:25 2020
 // Host        : DESKTOP-RAY running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub
 //               C:/D/ray/nthu/digital_design_exp/final/main/v_test1/v_test1.srcs/sources_1/ip/pic_data/pic_data_stub.v

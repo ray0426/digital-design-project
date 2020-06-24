@@ -1,12 +1,13 @@
 module explosion_dir(
     exploded,
-    range,
+    p1_range,
+    p2_range,
     block_addr_h,
     block_addr_v,
     explosion_dir
 );
 input [63:0] exploded;
-input [3:0] range;
+input [3:0] p1_range, p2_range;
 input [3:0] block_addr_h, block_addr_v;
 output [3:0] explosion_dir;
 reg [3:0] explosion_dir;
@@ -17,7 +18,7 @@ bomb_judge_dir bomb_judge_11(
     .bomb_pos(exploded[63:56]),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
-    .range(range),
+    .range(p1_range),
     .dir(dir_11)
 );
 
@@ -25,7 +26,7 @@ bomb_judge_dir bomb_judge_12(
     .bomb_pos(exploded[55:48]),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
-    .range(range),
+    .range(p1_range),
     .dir(dir_12)
 );
 
@@ -33,7 +34,7 @@ bomb_judge_dir bomb_judge_13(
     .bomb_pos(exploded[47:40]),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
-    .range(range),
+    .range(p1_range),
     .dir(dir_13)
 );
 
@@ -41,7 +42,7 @@ bomb_judge_dir bomb_judge_14(
     .bomb_pos(exploded[39:32]),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
-    .range(range),
+    .range(p1_range),
     .dir(dir_14)
 );
 
@@ -49,7 +50,7 @@ bomb_judge_dir bomb_judge_21(
     .bomb_pos(exploded[31:24]),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
-    .range(range),
+    .range(p2_range),
     .dir(dir_21)
 );
 
@@ -57,7 +58,7 @@ bomb_judge_dir bomb_judge_22(
     .bomb_pos(exploded[23:16]),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
-    .range(range),
+    .range(p2_range),
     .dir(dir_22)
 );
 
@@ -65,7 +66,7 @@ bomb_judge_dir bomb_judge_23(
     .bomb_pos(exploded[15:8]),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
-    .range(range),
+    .range(p2_range),
     .dir(dir_23)
 );
 
@@ -73,7 +74,7 @@ bomb_judge_dir bomb_judge_24(
     .bomb_pos(exploded[7:0]),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
-    .range(range),
+    .range(p2_range),
     .dir(dir_24)
 );
 

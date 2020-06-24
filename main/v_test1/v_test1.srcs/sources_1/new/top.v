@@ -27,13 +27,12 @@ wire [3:0] player1_x, player1_y, player2_x, player2_y;
 wire [3:0] player1_cnt, player2_cnt;
 wire [1:0] player1_dir, player2_dir;
 wire [63:0] bomb_position, exploded;
-wire [3:0] bomb_range;
 wire [71:0] item_position;
 wire pl_die_1, pl_die_2;
 wire [17:0] getitem;
+wire [3:0] p1_speed, p2_speed, p1_range, p2_range, p1_bomb_amount, p2_bomb_amount;
 
 assign rst_n = ~sw[0];
-assign bomb_range = 4'd2;
 assign pl1_input = {pb_up_pulse, pb_down_pulse, pb_left_pulse, pb_right_pulse} & {4{sw[1]}};
 assign pl2_input = {pb_up_pulse, pb_down_pulse, pb_left_pulse, pb_right_pulse} & {4{~sw[1]}};
 
@@ -63,6 +62,8 @@ players players(
     .bomb_position(bomb_position),
     .pl1_input(pl1_input),
     .pl2_input(pl2_input),
+    .p1_speed(p1_speed),
+    .p2_speed(p2_speed),
     .player1_x(player1_x),
     .player1_y(player1_y),
     .player1_dir(player1_dir),
@@ -82,6 +83,10 @@ bomb U_bomb(
     .x_2(player2_x),
     .y_2(player2_y),
     .place_bomb_2(pb_mid_pulse && ~sw[1]),
+    .p1_range(p1_range),
+    .p2_range(p2_range), 
+    .p1_bomb_amount(p1_bomb_amount),
+    .p2_bomb_amount(p2_bomb_amount),
     .bomb_position(bomb_position),
     .exploded(exploded),
     .pl_die_1(pl_die_1),
@@ -103,7 +108,13 @@ player_eat player_eat(
     .x_2(player2_x),
     .y_2(player2_y),
     .item_position(item_position),
-    .get(getitem)
+    .get(getitem),
+    .p1_speed(p1_speed),
+    .p2_speed(p2_speed),
+    .p1_range(p1_range),
+    .p2_range(p2_range),
+    .p1_bomb_amount(p1_bomb_amount),
+    .p2_bomb_amount(p2_bomb_amount)
 );
 
 // Frequency Divider
@@ -126,9 +137,10 @@ field U_field(
     .player2_y(player2_y),
     .player2_cnt(player2_cnt),
     .player2_dir(player2_dir),
+    .p1_range(p1_range),
+    .p2_range(p2_range),
     .bomb_position(bomb_position),
     .exploded(exploded),
-    .range(bomb_range),
     .item_position(item_position),
     .pixel(pixel)
 );

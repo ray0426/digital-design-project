@@ -8,6 +8,10 @@ module bomb(
     x_2,
     y_2,
     place_bomb_2,
+    p1_range,
+    p2_range,
+    p1_bomb_amount,
+    p2_bomb_amount,
     bomb_position,
     exploded,
     pl_die_1,
@@ -16,6 +20,8 @@ module bomb(
 input clk, rst_n;
 input [3:0] x_1, y_1, x_2, y_2;
 input place_bomb_1, place_bomb_2;
+input [3:0] p1_range, p2_range;
+input [3:0] p1_bomb_amount, p2_bomb_amount;
 output [63:0] bomb_position;
 output [63:0] exploded;
 output pl_die_1, pl_die_2;
@@ -151,11 +157,11 @@ bomb_cnt bomb_24(
 always @ *
     if (bomb_en_11 == 1'b0)
         {en_11, en_12, en_13, en_14} = 4'b1000;
-    else if (bomb_en_12 == 1'b0)
+    else if (bomb_en_12 == 1'b0 && p1_bomb_amount >= 4'd2)
         {en_11, en_12, en_13, en_14} = 4'b0100;
-    else if (bomb_en_13 == 1'b0)
+    else if (bomb_en_13 == 1'b0 && p1_bomb_amount >= 4'd3)
         {en_11, en_12, en_13, en_14} = 4'b0010;
-    else if (bomb_en_14 == 1'b0)
+    else if (bomb_en_14 == 1'b0 && p1_bomb_amount >= 4'd4)
         {en_11, en_12, en_13, en_14} = 4'b0001;
     else
         {en_11, en_12, en_13, en_14} = 4'b0000;
@@ -163,11 +169,11 @@ always @ *
 always @ *
     if (bomb_en_21 == 1'b0)
         {en_21, en_22, en_23, en_24} = 4'b1000;
-    else if (bomb_en_22 == 1'b0)
+    else if (bomb_en_22 == 1'b0 && p2_bomb_amount >= 4'd2)
         {en_21, en_22, en_23, en_24} = 4'b0100;
-    else if (bomb_en_23 == 1'b0)
+    else if (bomb_en_23 == 1'b0 && p2_bomb_amount >= 4'd3)
         {en_21, en_22, en_23, en_24} = 4'b0010;
-    else if (bomb_en_24 == 1'b0)
+    else if (bomb_en_24 == 1'b0 && p2_bomb_amount >= 4'd4)
         {en_21, en_22, en_23, en_24} = 4'b0001;
     else
         {en_21, en_22, en_23, en_24} = 4'b0000;
@@ -182,6 +188,8 @@ explosions U_explosions(
     .bomb_trig_22(bomb_trig_22),
     .bomb_trig_23(bomb_trig_23),
     .bomb_trig_24(bomb_trig_24),
+    .p1_range(p1_range),
+    .p2_range(p2_range), 
     .explode_11(explode_11),
     .explode_12(explode_12),
     .explode_13(explode_13),
@@ -206,6 +214,8 @@ bomb_kill kill_p1(
     .x(x_1),
     .y(y_1),
     .exploded(exploded),
+    .p1_range(p1_range),
+    .p2_range(p2_range), 
     .pl_die(pl_die_1)
 );
 
@@ -215,6 +225,8 @@ bomb_kill kill_p2(
     .x(x_2),
     .y(y_2),
     .exploded(exploded),
+    .p1_range(p1_range),
+    .p2_range(p2_range), 
     .pl_die(pl_die_2)
 );
 

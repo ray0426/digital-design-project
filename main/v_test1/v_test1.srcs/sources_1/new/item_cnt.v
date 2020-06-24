@@ -30,7 +30,7 @@ output reg trig;
 reg delay;
 
 always@*
-    if (cnt == 4'd9)
+    if (cnt == 4'd4)
         cnt_temp = 0;
     else
         cnt_temp = cnt + 4'd1;
@@ -49,7 +49,7 @@ begin
         delay <= 0;
     else
     begin
-        if (cnt == 4'd9)
+        if (cnt == 4'd4)
             delay <= 1;
         else
             delay <= 0;

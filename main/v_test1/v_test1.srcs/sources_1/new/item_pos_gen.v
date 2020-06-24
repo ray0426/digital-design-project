@@ -23,12 +23,10 @@
 module item_pos_gen(
     clk, rst_n, clk_1,
     trig,
-    init_x, init_y,
     random_num_x,
     random_num_y
 );
 input wire clk, rst_n, clk_1;
-input wire init_x, init_y;
 output wire trig;
 output wire [3:0] random_num_x, random_num_y;
 
@@ -43,7 +41,7 @@ random Ux_digit(
     .clk(clk),
     .clk_1(clk_1), 
     .rst_n(rst_n),
-    .init(init_x),
+    .init(4'b1000),
     .random_num(random_num_x)
 );
     
@@ -51,7 +49,7 @@ random2 Uy_digit(
     .clk(clk),
     .clk_1(clk_1), 
     .rst_n(rst_n),
-    .init(init_y),
+    .init(6'b100011),
     .random_num(random_num_y)
 );
 

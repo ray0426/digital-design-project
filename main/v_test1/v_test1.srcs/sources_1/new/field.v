@@ -13,9 +13,10 @@ module field(
     player2_y,
     player2_cnt,
     player2_dir,
+    p1_range,
+    p2_range, 
     bomb_position,
     exploded,
-    range,
     item_position,
     pixel
 );
@@ -26,8 +27,8 @@ input [9:0] v_cnt;
 input [3:0] player1_x, player1_y, player2_x, player2_y;
 input [1:0] player1_dir, player2_dir;
 input [3:0] player1_cnt, player2_cnt;
+input [3:0] p1_range, p2_range; 
 input [63:0] bomb_position, exploded;
-input [3:0] range;
 input [71:0] item_position;
 output [11:0] pixel;
 
@@ -96,7 +97,8 @@ display_bombs U_bombs_show(
     .clk(clk),
     .bombs(bomb_position),
     .exploded(exploded),
-    .range(range),
+    .p1_range(p1_range),
+    .p2_range(p2_range),
     .block_addr_h(block_addr_h),
     .block_addr_v(block_addr_v),
     .addr_rela_h(addr_rela_h),

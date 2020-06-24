@@ -4,6 +4,8 @@ module players(
     bomb_position,
     pl1_input,
     pl2_input,
+    p1_speed,
+    p2_speed,
     player1_x,
     player1_y,
     player1_dir,
@@ -16,15 +18,20 @@ module players(
 input clk, rst_n;
 input [63:0] bomb_position;
 input [3:0] pl1_input, pl2_input;
+input [3:0] p1_speed, p2_speed;
 output [3:0] player1_x, player1_y, player2_x, player2_y;
 output [1:0] player1_dir, player2_dir;
 output [3:0] player1_cnt, player2_cnt;
+wire [26:0] walk_freq1, walk_freq2;
 wire clk_step1, clk_step2;
+
+assign walk_freq1 = 781250 - (p1_speed * 36622);
+assign walk_freq2 = 781250 - (p2_speed * 36622);
 
 freqdiv27 U_fd27(
     .clk(clk),
     .rst_n(rst_n),
-    .set_freq(27'd390624),
+    .set_freq(walk_freq1),
     .clk_time(clk_step1),
     .clk_ctl()
 );
@@ -32,7 +39,7 @@ freqdiv27 U_fd27(
 freqdiv27 U_fd27_2(
     .clk(clk),
     .rst_n(rst_n),
-    .set_freq(27'd390624),
+    .set_freq(walk_freq2),
     .clk_time(clk_step2),
     .clk_ctl()
 );
@@ -70,4 +77,5 @@ player player2(
     .left(pl2_input[1]),
     .right(pl2_input[0])
 );
+
 endmodule

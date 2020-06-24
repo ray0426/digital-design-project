@@ -88,10 +88,11 @@ item Ulength(
     .get_item_1(get_len_1), 
     .get_item_2(get_len_2), 
     .get_item_3(get_len_3), 
-    .item(item_length),
+    .item(item_len),
     .random_num_x(random_num_x),
     .random_num_y(random_num_y),
-    .en(en_len)
+    .en(en_len),
+    .trig(trig)
 );
 
 item Uamount(
@@ -104,7 +105,8 @@ item Uamount(
     .item(item_amount),
     .random_num_x(random_num_x),
     .random_num_y(random_num_y),
-    .en(en_num)
+    .en(en_num),
+    .trig(trig)
 );
 
 item Uspeed(
@@ -117,6 +119,7 @@ item Uspeed(
     .item(item_speed),
     .random_num_x(random_num_x),
     .random_num_y(random_num_y),
-    .en(en_speed)
+    .en(en_sp),
+    .trig(trig)
 );
 endmodule

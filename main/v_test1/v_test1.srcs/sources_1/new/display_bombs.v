@@ -2,7 +2,8 @@ module display_bombs(
     clk,
     bombs,     // bomb_positions
     exploded,
-    range,
+    p1_range,
+    p2_range, 
     block_addr_h,
     block_addr_v,
     addr_rela_h,
@@ -12,7 +13,7 @@ module display_bombs(
 );
 input clk;
 input [63:0] bombs, exploded;
-input [3:0] range;
+input [3:0] p1_range, p2_range; 
 input [8:0] block_addr_h, block_addr_v;
 input [4:0] addr_rela_h, addr_rela_v;
 output [11:0] bombs_pixel;
@@ -43,7 +44,8 @@ bomb_pic bomb_pic(
 
 explosion_dir U_explosion_dir(
     .exploded(exploded),
-    .range(range),
+    .p1_range(p1_range),
+    .p2_range(p2_range),
     .block_addr_h(block_addr_h[3:0]),
     .block_addr_v(block_addr_v[3:0]),
     .explosion_dir(explosion_dir)

@@ -116,4 +116,13 @@ Speaker Speaker(
     .pb_frog_pulse(pb_pulse[3])
 );
 
+BCD_up_counter BCD_up_counter(
+    .clk(clk),
+    .rst_n(~dips[0]),
+    .digit_1(leds[3:0]),
+    .digit_10(leds[7:4]),
+    .digit_min1(leds[11:8]),
+    .digit_min10(leds[15:12])
+);
+
 endmodule

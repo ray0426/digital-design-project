@@ -24,15 +24,12 @@
 module ring_note(
     clk,
     rst_n,
-    beat,
     note,
-    //note1,
     music_mode, music_mode_cur, music_rst,
     ring
 );
 input clk, rst_n;
 input music_mode, music_mode_cur, music_rst;
-output beat;
 output [21:0] note;
 //output reg [21:0] note1;
 output reg [1025:0] ring;
@@ -64,27 +61,6 @@ begin
     else
         rst = 1;
 end
-/*
-always @(posedge beat_clk or negedge rst)
-begin
-    if (~rst)
-    begin
-       ring <= {2'b01, 768'b0, `black};
-       ring1 <= {514'b0, `frog};
-    end
-    else
-    begin
-       ring <= ring_next;
-       ring1 <= ring1_next;
-    end
-end
-
-always@*
-begin
-    ring1_next = {514'b0, ring1[503:0], ring1[511:504]};
-    ring_next = {2'b01, 768'b0, ring[247:0], ring[255:248]};
-end
-*/
 
 always@*
 begin

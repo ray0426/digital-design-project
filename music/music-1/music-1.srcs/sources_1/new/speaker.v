@@ -28,10 +28,7 @@ module speaker(
     pb_down,
     pb_up,
     pb_mid,
-    DIP_music,
-    segs,
     ssd_ctl,
-    leds,
     audio_mclk,
     audio_lrck,
     audio_sck,
@@ -39,10 +36,7 @@ module speaker(
 );
 input clk;
 input pb_left, pb_right, pb_down, pb_up, pb_mid;
-input DIP_music;
-output [7:0] segs;
 output [3:0] ssd_ctl;
-output [15:0] leds;
 output audio_mclk, audio_lrck, audio_sck, audio_sdin;
 wire [15:0] amp_down, amp_up;
 wire [15:0] audio_left, audio_right;
@@ -58,14 +52,14 @@ wire music_mode, music_mode_cur;
 reg music_rst;
 wire [1025:0] ring;
 
-assign leds[0] = beat;
+//assign leds[0] = beat;
 assign amp_down = 16'hFF00;
 assign amp_up = 16'h0200;
-assign leds[1] = music_mode;
-assign leds[2] = pb_right;
+//assign leds[1] = music_mode;
+//assign leds[2] = pb_right;
 assign note_num = ring[1025 : 1024];
-assign leds[4] = ring[1025];
-assign leds[5] = ring[1024];
+//assign leds[4] = ring[1025];
+//assign leds[5] = ring[1024];
 
 always@*
 begin
@@ -104,8 +98,6 @@ ring_note U_rn(
     .rst_n(rst_n),
     .beat(beat),
     .note(note),
-    .note1(note1),
-    .DIP_music(DIP_music),
     .music_mode(music_mode),
     .music_mode_cur(music_mode_cur),
     .music_rst(music_rst),
@@ -116,7 +108,7 @@ buzzer_control U_bc(
     .clk(clk),
     .rst_n(rst_n),
     .note1(note),
-    .note2(note1),
+    .note2(22'd0),
     .note3(22'd0),
     .note4(22'd0),
     .amp(amp_up),
@@ -159,10 +151,11 @@ scan_ctl U_sc(
     .ssd_ctl_en(ssd_ctl_en) // divided clock for scan control
 );
 
+/*
 // BCD-to 7-seg
 display U_display(
     .bcd(ssd_in), // BCD number input
     .segs(segs) // 7-segment display output
 );
-
+*/
 endmodule

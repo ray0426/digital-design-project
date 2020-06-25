@@ -25,16 +25,16 @@ module ring_note(
     clk,
     rst_n,
     beat,
-    note, note1,
-    DIP_music,
+    note,
+    //note1,
     music_mode, music_mode_cur, music_rst,
     ring
 );
-input clk, rst_n, DIP_music;
+input clk, rst_n;
 input music_mode, music_mode_cur, music_rst;
 output beat;
 output [21:0] note;
-output reg [21:0] note1;
+//output reg [21:0] note1;
 output reg [1025:0] ring;
 
 wire beat_clk;
@@ -64,7 +64,7 @@ begin
     else
         rst = 1;
 end
-
+/*
 always @(posedge beat_clk or negedge rst)
 begin
     if (~rst)
@@ -84,8 +84,8 @@ begin
     ring1_next = {514'b0, ring1[503:0], ring1[511:504]};
     ring_next = {2'b01, 768'b0, ring[247:0], ring[255:248]};
 end
+*/
 
-/*
 always@*
 begin
     if (music_mode == `play_frog)
@@ -105,14 +105,16 @@ end
 always @(posedge beat_clk or negedge rst)
 begin
     if (~rst)
+    begin
         if (music_mode == `play_black)
             ring <= {2'b01, 768'b0, `black};
         else
             ring <= {514'b0, `frog};
+    end
     else
         ring <= ring_next;
 end
-*/
+
 always @ *
 begin
     case(ring[7:0])
@@ -204,7 +206,7 @@ begin
     default : note = `note_none;
     endcase
 end
-
+/*
 always @ *
 begin
     case(ring1[7:0])
@@ -296,4 +298,5 @@ begin
     default : note1 = `note_none;
     endcase
 end
+*/
 endmodule

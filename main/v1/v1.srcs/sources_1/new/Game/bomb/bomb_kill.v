@@ -12,9 +12,11 @@ input clk, rst_n;
 input [3:0] x, y;
 input [63:0] exploded;
 input [3:0] p1_range, p2_range; 
-output reg pl_die;
-reg pl_die_next;
+output pl_die;
+reg pl_die_next, pl_die_delay;
 wire en_11, en_12, en_13, en_14, en_21, en_22, en_23, en_24;
+
+assign pl_die = (pl_die_delay == 1'b1) && (pl_die_next == 1'b0); 
 
 kill_judge range_11(
     .range(p1_range),
@@ -76,12 +78,9 @@ always @ *
     if (en_11 | en_12 | en_13 | en_14 | en_21 | en_22 | en_23 | en_24)
         pl_die_next = 1'b1;
     else
-        pl_die_next = pl_die;
+        pl_die_next = 1'b0;
 
-always @ (posedge clk or negedge rst_n)
-    if (~rst_n)
-        pl_die <= 1'b0;
-    else
-        pl_die <= pl_die_next;
+always @ (posedge clk)
+        pl_die_delay <= pl_die_next;
 
 endmodule

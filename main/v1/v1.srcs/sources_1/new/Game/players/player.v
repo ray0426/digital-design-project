@@ -1,24 +1,3 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2020/06/01 20:52:23
-// Design Name: 
-// Module Name: player
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 `include "global.v"
 module player(
     clk,
@@ -29,6 +8,7 @@ module player(
     y,
     x_default,
     y_default,
+    die,
     direction,
     step_cnt,
     up,
@@ -50,6 +30,7 @@ input [3:0] x_default, y_default;     // default value input
 input up, down, left, right;
 input clk, clk_step, rst_n;
 input [63:0] bomb_position;
+input die;
 output reg [3:0] x,y;
 output reg [1:0] direction;
 output reg [3:0] step_cnt;
@@ -161,7 +142,11 @@ assign step_trig = (step_cnt == 4'd0 && step_cnt_delay == 4'd15) ? 1'b1 : 1'b0;
     movement on the plane
   ******************************/
 always @ *
-    if (step_trig)
+    if (die == 1'b1) begin
+        x_temp = x_default;
+        y_temp = y_default;
+    end
+    else if (step_trig)
         case (direction)
         `face_left : 
             if (x != 4'd0)                  // edge judgment

@@ -11,7 +11,7 @@ output reg vanish_enable;
 reg [27:0] cnt, cnt_next;
 
 always @ *
-    if (cnt == 27'd99999999) begin
+    if (cnt == 27'd24999999) begin
         cnt_next = 27'd0;
         vanish_enable = 1'b1;
     end

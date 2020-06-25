@@ -3,7 +3,8 @@ module Game(
     input key_esc, key_space, key_enter,
     input [4:0] key_wsad, key_5213,
     input [9:0] h_cnt, v_cnt,
-    output [11:0] pixel
+    output [11:0] pixel,
+    output pl_die_1, pl_die_2
 );
 wire clk_25MHz;
 wire [3:0] player1_x, player1_y, player2_x, player2_y;
@@ -23,6 +24,8 @@ players players(
     .pl2_input(key_5213),
     .p1_speed(p1_speed),
     .p2_speed(p2_speed),
+    .pl_die_1(pl_die_1),
+    .pl_die_2(pl_die_2),
     .player1_x(player1_x),
     .player1_y(player1_y),
     .player1_dir(player1_dir),

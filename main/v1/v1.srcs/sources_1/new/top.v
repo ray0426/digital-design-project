@@ -13,7 +13,13 @@ module top(
     vgaBlue,
     hsync,
     vsync,
-    leds
+    leds,
+    ssd_ctl,
+    segs,
+    audio_mclk,
+    audio_lrck,
+    audio_sck,
+    audio_sdin
 );
 input clk;
 input [15:0] dips;
@@ -23,6 +29,9 @@ input [4:0] buttons;
 output [3:0] vgaRed, vgaGreen, vgaBlue;
 output hsync, vsync;
 output [15:0] leds;
+output [7:0] segs;
+output [3:0] ssd_ctl;
+output audio_mclk, audio_lrck, audio_sck, audio_sdin;
 
 wire key_esc, key_space, key_enter;
 wire [3:0] key_wsad, key_5213;
@@ -30,6 +39,9 @@ wire [4:0] pb_pulse;
 wire [9:0] h_cnt, v_cnt;
 wire valid;
 wire [11:0] pixel;
+wire pl_die_1, pl_die_2;
+wire gameover;
+wire [3:0] dig3, dig2, dig1, dig0;
 
 assign {vgaRed, vgaGreen, vgaBlue} = (valid == 1'b1) ? pixel :12'h0;
 
@@ -47,6 +59,16 @@ inputs U_in(
     .pb_pulse(pb_pulse)
 );
 
+FSM FSM(
+    .clk(clk),
+    .rst_n(~dips[0]),
+    .pl_die_1(pl_die_1),
+    .pl_die_2(pl_die_2),
+    .p1_score(dig2),
+    .p2_score(dig0),
+    .gameover(gameover)
+);
+
 Game Game(
     .clk(clk),
     .rst_n(~dips[0]),
@@ -57,7 +79,9 @@ Game Game(
     .key_5213(key_5213),
     .h_cnt(h_cnt),
     .v_cnt(v_cnt),
-    .pixel(pixel)
+    .pixel(pixel),
+    .pl_die_1(pl_die_1),
+    .pl_die_2(pl_die_2)
 );
 
 VGA VGA(
@@ -68,6 +92,28 @@ VGA VGA(
   .valid(valid),
   .h_cnt(h_cnt),
   .v_cnt(v_cnt)
+);
+
+SSD_out SSD_out(
+    .clk(clk),
+    .rst_n(~dips[0]),
+    .dig3(dig3),
+    .dig2(dig2),
+    .dig1(dig1),
+    .dig0(dig0),
+    .segs(segs),
+    .ssd_ctl(ssd_ctl)
+);
+
+Speaker Speaker(
+    .clk(clk),
+    .rst_n(~dips[0]),
+    .audio_mclk(audio_mclk),
+    .audio_lrck(audio_lrck),
+    .audio_sck(audio_sck),
+    .audio_sdin(audio_sdin),
+    .pb_black_pulse(pb_pulse[1]),
+    .pb_frog_pulse(pb_pulse[3])
 );
 
 endmodule
